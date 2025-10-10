@@ -1,0 +1,107 @@
+# ROS 2 Build Artifacts
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+*.egg
+
+# C/C++
+*.o
+*.a
+*.so
+*.dylib
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.cproject
+.pydevproject
+.settings/
+*.sublime-*
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# ROS
+devel/
+build/
+install/
+log/
+.catkin_workspace
+*.bag
+*.bag.active
+
+# Webots
+.*.wbproj
+*.wbproj
+
+# Temporary Files
+*.tmp
+*.temp
+*.log
+*.bak
+*.swp
+*.orig
+
+# Documentation Build
+docs/_build/
+docs/_static/
+docs/_templates/
+
+# Test Results
+test_results/
+*.xml.test
+
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+
+# Environment
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Generated documentation
+*.pdf
+*.html
+
+# Cached files
+*.cache
+
+# Core dumps
+core
+core.*
