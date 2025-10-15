@@ -38,14 +38,102 @@
   <!-- Base Link (Chassis)                        -->
   <!-- ========================================== -->
   <link name="base_link">
-    <visual>
-      <origin xyz="0 0 ${chassis_height/2}" rpy="0 0 0"/>
+    <!-- Main chassis base plate -->
+    <visual name="base_plate">
+      <origin xyz="0 0 0.02" rpy="0 0 0"/>
       <geometry>
-        <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+        <box size="${chassis_length} ${chassis_width} 0.04"/>
       </geometry>
-      <material name="light_grey"/>
+      <material name="metallic_grey"/>
     </visual>
     
+    <!-- Chassis side panels -->
+    <visual name="side_panel_left">
+      <origin xyz="0 ${chassis_width/2 - 0.01} ${chassis_height/2}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${chassis_length} 0.02 ${chassis_height - 0.04}"/>
+      </geometry>
+      <material name="metallic_blue"/>
+    </visual>
+    
+    <visual name="side_panel_right">
+      <origin xyz="0 ${-chassis_width/2 + 0.01} ${chassis_height/2}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${chassis_length} 0.02 ${chassis_height - 0.04}"/>
+      </geometry>
+      <material name="metallic_blue"/>
+    </visual>
+    
+    <!-- Front and rear panels -->
+    <visual name="front_panel">
+      <origin xyz="${chassis_length/2 - 0.01} 0 ${chassis_height/2}" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.02 ${chassis_width - 0.04} ${chassis_height - 0.04}"/>
+      </geometry>
+      <material name="metallic_blue"/>
+    </visual>
+    
+    <visual name="rear_panel">
+      <origin xyz="${-chassis_length/2 + 0.01} 0 ${chassis_height/2}" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.02 ${chassis_width - 0.04} ${chassis_height - 0.04}"/>
+      </geometry>
+      <material name="metallic_blue"/>
+    </visual>
+    
+    <!-- Top cover plate -->
+    <visual name="top_cover">
+      <origin xyz="0 0 ${chassis_height - 0.02}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${chassis_length - 0.02} ${chassis_width - 0.02} 0.04"/>
+      </geometry>
+      <material name="metallic_grey"/>
+    </visual>
+    
+    <!-- Safety bumpers -->
+    <visual name="front_bumper">
+      <origin xyz="${chassis_length/2 + 0.015} 0 ${chassis_height/4}" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.03 ${chassis_width - 0.1} 0.05"/>
+      </geometry>
+      <material name="yellow_warning"/>
+    </visual>
+    
+    <visual name="rear_bumper">
+      <origin xyz="${-chassis_length/2 - 0.015} 0 ${chassis_height/4}" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.03 ${chassis_width - 0.1} 0.05"/>
+      </geometry>
+      <material name="yellow_warning"/>
+    </visual>
+    
+    <!-- Cable conduits (decorative) -->
+    <visual name="cable_conduit_left">
+      <origin xyz="0 ${chassis_width/2 - 0.03} 0.06" rpy="0 0 0"/>
+      <geometry>
+        <box size="${chassis_length - 0.1} 0.015 0.015"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    
+    <visual name="cable_conduit_right">
+      <origin xyz="0 ${-chassis_width/2 + 0.03} 0.06" rpy="0 0 0"/>
+      <geometry>
+        <box size="${chassis_length - 0.1} 0.015 0.015"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    
+    <!-- Electronics bay indicator -->
+    <visual name="electronics_bay">
+      <origin xyz="-0.1 0 ${chassis_height/2}" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.2 0.15 ${chassis_height - 0.08}"/>
+      </geometry>
+      <material name="dark_grey"/>
+    </visual>
+    
+    <!-- Collision (simplified) -->
     <collision>
       <origin xyz="0 0 ${chassis_height/2}" rpy="0 0 0"/>
       <geometry>

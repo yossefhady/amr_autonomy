@@ -20,12 +20,64 @@
     
     <!-- Wheel link -->
     <link name="wheel_${prefix}">
-      <visual>
+      <!-- Main tire -->
+      <visual name="tire">
         <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
         <geometry>
           <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
         </geometry>
-        <material name="black"/>
+        <material name="rubber_black"/>
+      </visual>
+      
+      <!-- Wheel hub/rim -->
+      <visual name="hub">
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius * 0.6}" length="${wheel_width + 0.005}"/>
+        </geometry>
+        <material name="metallic_grey"/>
+      </visual>
+      
+      <!-- Hub center cap -->
+      <visual name="hub_cap">
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius * 0.3}" length="${wheel_width + 0.01}"/>
+        </geometry>
+        <material name="dark_grey"/>
+      </visual>
+      
+      <!-- Tread grooves indicators (decorative boxes) -->
+      <visual name="tread_1">
+        <origin xyz="${wheel_radius * 0.9} 0 0" rpy="0 ${pi/2} 0"/>
+        <geometry>
+          <box size="${wheel_width * 1.2} 0.003 0.005"/>
+        </geometry>
+        <material name="dark_grey"/>
+      </visual>
+      
+      <visual name="tread_2">
+        <origin xyz="0 ${wheel_radius * 0.9} 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <box size="${wheel_width * 1.2} 0.003 0.005"/>
+        </geometry>
+        <material name="dark_grey"/>
+      </visual>
+      
+      <visual name="tread_3">
+        <origin xyz="${-wheel_radius * 0.9} 0 0" rpy="0 ${pi/2} 0"/>
+        <geometry>
+          <box size="${wheel_width * 1.2} 0.003 0.005"/>
+        </geometry>
+        <material name="dark_grey"/>
+      </visual>
+      
+      <visual name="tread_4">
+        <origin xyz="0 ${-wheel_radius * 0.9} 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <box size="${wheel_width * 1.2} 0.003 0.005"/>
+        </geometry>
+        <material name="dark_grey"/>
       </visual>
       
       <collision>

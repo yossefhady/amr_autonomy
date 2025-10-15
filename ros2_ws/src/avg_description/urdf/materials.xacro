@@ -3,8 +3,9 @@
 
   <!-- Define material colors for visualization -->
   
+  <!-- Basic Colors -->
   <material name="black">
-    <color rgba="0.0 0.0 0.0 1.0"/>
+    <color rgba="0.05 0.05 0.05 1.0"/>
   </material>
 
   <material name="dark_grey">
@@ -16,7 +17,7 @@
   </material>
 
   <material name="white">
-    <color rgba="1.0 1.0 1.0 1.0"/>
+    <color rgba="0.95 0.95 0.95 1.0"/>
   </material>
 
   <material name="red">
@@ -39,13 +40,129 @@
     <color rgba="0.0 0.0 0.8 1.0"/>
   </material>
 
-  <material name="transparent_blue">
-    <color rgba="0.0 0.5 1.0 0.5"/>
+  <!-- Metallic Materials (with slight reflective appearance) -->
+  <material name="metallic_grey">
+    <color rgba="0.6 0.6 0.65 1.0"/>
   </material>
 
-  <!-- Gazebo material references -->
+  <material name="metallic_blue">
+    <color rgba="0.15 0.3 0.55 1.0"/>
+  </material>
+
+  <material name="brushed_aluminum">
+    <color rgba="0.75 0.77 0.78 1.0"/>
+  </material>
+
+  <material name="chrome">
+    <color rgba="0.85 0.85 0.85 1.0"/>
+  </material>
+
+  <!-- Plastic Materials -->
+  <material name="plastic_black">
+    <color rgba="0.1 0.1 0.1 1.0"/>
+  </material>
+
+  <material name="plastic_grey">
+    <color rgba="0.45 0.45 0.45 1.0"/>
+  </material>
+
+  <material name="plastic_white">
+    <color rgba="0.9 0.9 0.9 1.0"/>
+  </material>
+
+  <!-- Rubber Materials -->
+  <material name="rubber_black">
+    <color rgba="0.08 0.08 0.08 1.0"/>
+  </material>
+
+  <material name="rubber_grey">
+    <color rgba="0.25 0.25 0.25 1.0"/>
+  </material>
+
+  <!-- Warning/Safety Colors -->
+  <material name="yellow_warning">
+    <color rgba="1.0 0.9 0.0 1.0"/>
+  </material>
+
+  <material name="orange_warning">
+    <color rgba="1.0 0.4 0.0 1.0"/>
+  </material>
+
+  <material name="red_warning">
+    <color rgba="0.9 0.0 0.0 1.0"/>
+  </material>
+
+  <!-- Transparent Materials -->
+  <material name="transparent_blue">
+    <color rgba="0.2 0.5 0.8 0.3"/>
+  </material>
+
+  <material name="transparent_green">
+    <color rgba="0.2 0.8 0.2 0.3"/>
+  </material>
+
+  <material name="transparent_grey">
+    <color rgba="0.5 0.5 0.5 0.4"/>
+  </material>
+
+  <!-- LED/Indicator Colors -->
+  <material name="led_green">
+    <color rgba="0.0 1.0 0.0 1.0"/>
+  </material>
+
+  <material name="led_red">
+    <color rgba="1.0 0.0 0.0 1.0"/>
+  </material>
+
+  <material name="led_blue">
+    <color rgba="0.0 0.5 1.0 1.0"/>
+  </material>
+
+  <!-- Industrial Colors -->
+  <material name="industrial_yellow">
+    <color rgba="0.95 0.85 0.1 1.0"/>
+  </material>
+
+  <material name="industrial_orange">
+    <color rgba="0.95 0.45 0.05 1.0"/>
+  </material>
+
+  <material name="industrial_blue">
+    <color rgba="0.1 0.3 0.6 1.0"/>
+  </material>
+
+  <!-- Gazebo material references for realistic rendering -->
   <gazebo reference="base_link">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <!-- Additional Gazebo materials for sensors and wheels -->
+  <gazebo reference="wheel_front_left">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="wheel_front_right">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="wheel_rear_left">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="wheel_rear_right">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="lidar_link">
     <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <gazebo reference="camera_link">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="imu_link">
+    <material>Gazebo/Blue</material>
   </gazebo>
 
 </robot>

@@ -2,6 +2,25 @@
 
 This package contains the URDF/Xacro description for a 4-wheeled warehouse Autonomous Guided Vehicle (AGV) robot compatible with ROS 2 Jazzy.
 
+## 🎨 Recent Enhancements (October 2025)
+
+### Robot Enhancements
+
+✨ Multi-layer chassis with base plate, panels, and top cover  
+✨ Realistic wheels with hubs, treads, and center caps  
+✨ Detailed sensor housings (LIDAR dome, camera lens)  
+✨ Safety bumpers and cable conduits  
+✨ 25+ realistic materials (metallic, rubber, plastic)  
+
+### Warehouse Enhancements
+
+✨ 4m high walls with windows and loading dock  
+✨ Professional storage racks and loaded pallets  
+✨ Safety equipment (barriers, fire extinguisher, signs)  
+✨ Charging station and work areas  
+✨ Industrial lighting system  
+✨ Floor markings and operational zones
+
 ## Robot Specifications
 
 ### Physical Dimensions

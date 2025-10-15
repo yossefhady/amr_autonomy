@@ -11,12 +11,57 @@
   <xacro:macro name="lidar_sensor" params="parent *origin">
     
     <link name="lidar_link">
-      <visual>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+      <!-- LIDAR base mount -->
+      <visual name="base_mount">
+        <origin xyz="0 0 -0.02" rpy="0 0 0"/>
         <geometry>
-          <cylinder radius="0.05" length="0.07"/>
+          <cylinder radius="0.04" length="0.03"/>
+        </geometry>
+        <material name="metallic_grey"/>
+      </visual>
+      
+      <!-- Main LIDAR housing -->
+      <visual name="main_housing">
+        <origin xyz="0 0 0.015" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="0.05" length="0.04"/>
         </geometry>
         <material name="dark_grey"/>
+      </visual>
+      
+      <!-- LIDAR dome/window -->
+      <visual name="sensor_dome">
+        <origin xyz="0 0 0.04" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="0.048" length="0.025"/>
+        </geometry>
+        <material name="transparent_blue"/>
+      </visual>
+      
+      <!-- Mounting brackets -->
+      <visual name="bracket_1">
+        <origin xyz="0.045 0 -0.01" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.01 0.015 0.05"/>
+        </geometry>
+        <material name="black"/>
+      </visual>
+      
+      <visual name="bracket_2">
+        <origin xyz="-0.045 0 -0.01" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.01 0.015 0.05"/>
+        </geometry>
+        <material name="black"/>
+      </visual>
+      
+      <!-- Cable connection port -->
+      <visual name="cable_port">
+        <origin xyz="0 0.05 -0.005" rpy="0 ${pi/2} 0"/>
+        <geometry>
+          <cylinder radius="0.006" length="0.015"/>
+        </geometry>
+        <material name="black"/>
       </visual>
       
       <collision>
@@ -147,12 +192,58 @@
   <xacro:macro name="camera_sensor" params="parent *origin">
     
     <link name="camera_link">
-      <visual>
+      <!-- Camera housing -->
+      <visual name="camera_body">
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <box size="0.03 0.1 0.03"/>
+          <box size="0.04 0.08 0.03"/>
         </geometry>
-        <material name="red"/>
+        <material name="black"/>
+      </visual>
+      
+      <!-- Camera lens -->
+      <visual name="lens">
+        <origin xyz="0.021 0 0" rpy="0 ${pi/2} 0"/>
+        <geometry>
+          <cylinder radius="0.012" length="0.005"/>
+        </geometry>
+        <material name="dark_grey"/>
+      </visual>
+      
+      <!-- Lens glass -->
+      <visual name="lens_glass">
+        <origin xyz="0.024 0 0" rpy="0 ${pi/2} 0"/>
+        <geometry>
+          <cylinder radius="0.01" length="0.002"/>
+        </geometry>
+        <material name="transparent_blue"/>
+      </visual>
+      
+      <!-- Status LED indicator -->
+      <visual name="status_led">
+        <origin xyz="0.015 0.025 0.01" rpy="0 0 0"/>
+        <geometry>
+          <sphere radius="0.002"/>
+        </geometry>
+        <material name="green"/>
+      </visual>
+      
+      <!-- Mounting bracket -->
+      <visual name="mount_bracket">
+        <origin xyz="-0.015 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.01 0.08 0.04"/>
+        </geometry>
+        <material name="metallic_grey"/>
+      </visual>
+      
+      <!-- Cable connector -->
+      <visual name="cable_connector">
+        <origin xyz="-0.02 0 -0.01" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.015 0.02 0.01"/>
+        </geometry>
+        <material name="dark_grey"/>
       </visual>
       
       <collision>
