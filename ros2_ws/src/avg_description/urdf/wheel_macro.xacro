@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- 
+    Wheel Macro
+    Creates a wheel with visual, collision, and inertial properties
+    Parameters:
+      - prefix: wheel position identifier (e.g., front_left, rear_right)
+      - parent: parent link name
+      - xyz: position offset [x, y, z]
+      - rpy: orientation [roll, pitch, yaw]
+  -->
+  
+  <xacro:macro name="wheel" params="prefix parent *origin">
+    
+    <!-- Wheel properties -->
+    <xacro:property name="wheel_radius" value="0.05"/>
+    <xacro:property name="wheel_width" value="0.02"/>
+    <xacro:property name="wheel_mass" value="0.5"/>
+    
+    <!-- Wheel link -->
+    <link name="wheel_${prefix}">
+      <visual>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+        </geometry>
+        <material name="black"/>
+      </visual>
+      
+      <collision>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+        </geometry>
+      </collision>
+      
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="${wheel_mass}"/>
+        <inertia 
+          ixx="${(wheel_mass/12) * (3*wheel_radius*wheel_radius + wheel_width*wheel_width)}" 
+          ixy="0.0" 
+          ixz="0.0"
+          iyy="${(wheel_mass/12) * (3*wheel_radius*wheel_radius + wheel_width*wheel_width)}" 
+          iyz="0.0" 
+          izz="${(wheel_mass/2) * wheel_radius * wheel_radius}"/>
+      </inertial>
+    </link>
+    
+    <!-- Wheel joint -->
+    <joint name="wheel_${prefix}_joint" type="continuous">
+      <xacro:insert_block name="origin"/>
+      <parent link="${parent}"/>
+      <child link="wheel_${prefix}"/>
+      <axis xyz="0 1 0"/>
+      <dynamics damping="0.1" friction="0.1"/>
+    </joint>
+    
+    <!-- Gazebo properties for the wheel -->
+    <gazebo reference="wheel_${prefix}">
+      <material>Gazebo/Black</material>
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+      <kp>1000000.0</kp>
+      <kd>100.0</kd>
+      <minDepth>0.001</minDepth>
+      <maxVel>1.0</maxVel>
+    </gazebo>
+    
+  </xacro:macro>
+
+</robot>

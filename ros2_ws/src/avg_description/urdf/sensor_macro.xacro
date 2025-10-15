@@ -1,0 +1,226 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- 
+    LIDAR Sensor Macro
+    Creates a 2D LIDAR sensor link with mounting
+    Parameters:
+      - parent: parent link name
+      - xyz: position offset [x, y, z]
+  -->
+  <xacro:macro name="lidar_sensor" params="parent *origin">
+    
+    <link name="lidar_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="0.05" length="0.07"/>
+        </geometry>
+        <material name="dark_grey"/>
+      </visual>
+      
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="0.05" length="0.07"/>
+        </geometry>
+      </collision>
+      
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.125"/>
+        <inertia 
+          ixx="0.0001" 
+          ixy="0.0" 
+          ixz="0.0"
+          iyy="0.0001" 
+          iyz="0.0" 
+          izz="0.0001"/>
+      </inertial>
+    </link>
+    
+    <joint name="lidar_joint" type="fixed">
+      <xacro:insert_block name="origin"/>
+      <parent link="${parent}"/>
+      <child link="lidar_link"/>
+    </joint>
+    
+    <!-- Gazebo LIDAR sensor plugin for gz sim (Gazebo Harmonic) -->
+    <gazebo reference="lidar_link">
+      <material>Gazebo/DarkGrey</material>
+      <sensor name="gpu_lidar" type="gpu_lidar">
+        <pose>0 0 0 0 0 0</pose>
+        <always_on>1</always_on>
+        <update_rate>10</update_rate>
+        <visualize>true</visualize>
+        <topic>scan</topic>
+        <gz_frame_id>lidar_link</gz_frame_id>
+        <lidar>
+          <scan>
+            <horizontal>
+              <samples>720</samples>
+              <resolution>1</resolution>
+              <min_angle>-3.14156</min_angle>
+              <max_angle>3.14156</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>0.05</min>
+            <max>10.0</max>
+            <resolution>0.01</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+          </noise>
+        </lidar>
+      </sensor>
+    </gazebo>
+    
+  </xacro:macro>
+
+  <!-- 
+    IMU Sensor Macro
+    Creates an IMU sensor link
+    Parameters:
+      - parent: parent link name
+      - xyz: position offset [x, y, z]
+  -->
+  <xacro:macro name="imu_sensor" params="parent *origin">
+    
+    <link name="imu_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.03 0.03 0.01"/>
+        </geometry>
+        <material name="blue"/>
+      </visual>
+      
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.03 0.03 0.01"/>
+        </geometry>
+      </collision>
+      
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.015"/>
+        <inertia 
+          ixx="0.00001" 
+          ixy="0.0" 
+          ixz="0.0"
+          iyy="0.00001" 
+          iyz="0.0" 
+          izz="0.00001"/>
+      </inertial>
+    </link>
+    
+    <joint name="imu_joint" type="fixed">
+      <xacro:insert_block name="origin"/>
+      <parent link="${parent}"/>
+      <child link="imu_link"/>
+    </joint>
+    
+    <!-- Gazebo IMU sensor plugin placeholder -->
+    <gazebo reference="imu_link">
+      <material>Gazebo/Blue</material>
+      <sensor name="imu" type="imu">
+        <always_on>1</always_on>
+        <update_rate>50</update_rate>
+        <topic>imu</topic>
+        <gz_frame_id>imu_link</gz_frame_id>
+      </sensor>
+    </gazebo>
+    
+  </xacro:macro>
+
+  <!-- 
+    Camera Sensor Macro
+    Creates an RGB camera sensor link
+    Parameters:
+      - parent: parent link name
+      - xyz: position offset [x, y, z]
+  -->
+  <xacro:macro name="camera_sensor" params="parent *origin">
+    
+    <link name="camera_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.03 0.1 0.03"/>
+        </geometry>
+        <material name="red"/>
+      </visual>
+      
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.03 0.1 0.03"/>
+        </geometry>
+      </collision>
+      
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.1"/>
+        <inertia 
+          ixx="0.00001" 
+          ixy="0.0" 
+          ixz="0.0"
+          iyy="0.00001" 
+          iyz="0.0" 
+          izz="0.00001"/>
+      </inertial>
+    </link>
+    
+    <joint name="camera_joint" type="fixed">
+      <xacro:insert_block name="origin"/>
+      <parent link="${parent}"/>
+      <child link="camera_link"/>
+    </joint>
+    
+    <!-- Camera optical frame (standard ROS convention) -->
+    <link name="camera_link_optical"/>
+    
+    <joint name="camera_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+      <parent link="camera_link"/>
+      <child link="camera_link_optical"/>
+    </joint>
+    
+    <!-- Gazebo camera sensor plugin placeholder -->
+    <gazebo reference="camera_link">
+      <material>Gazebo/Red</material>
+      <sensor name="camera" type="camera">
+        <always_on>1</always_on>
+        <update_rate>20</update_rate>
+        <visualize>true</visualize>
+        <topic>camera/image_raw</topic>
+        <camera name="front_camera">
+          <horizontal_fov>1.3962634</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>15</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+
+          <optical_frame_id>camera_link_optical</optical_frame_id>
+          <camera_info_topic>camera/camera_info</camera_info_topic>
+        </camera>
+      </sensor>
+    </gazebo>
+    
+  </xacro:macro>
+
+</robot>
