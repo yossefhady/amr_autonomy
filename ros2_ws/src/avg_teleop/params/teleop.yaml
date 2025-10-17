@@ -1,0 +1,42 @@
+/**:
+  ros__parameters:
+    ## Joystick axis mapping reference (PS4):
+    #   Axis 0: Left stick horizontal (left/right) -> angular.z (rotation)
+    #   Axis 1: Left stick vertical (up/down) -> linear.x (forward/backward)
+    #   Axis 2: L2 trigger
+    #   Axis 3: Right stick horizontal
+    #   Axis 4: Right stick vertical
+    #   Axis 5: R2 trigger
+    
+    ## Button mapping reference (PS4):
+    # 0: X (cross)
+    # 1: O (circle)
+    # 2: Triangle
+    # 3: Square
+    # 4: L1 (left bumper) - enable button
+    # 5: R1 (right bumper) - turbo button
+    # 6: L2 (left trigger button)
+    # 7: R2 (right trigger button)
+    
+    axis_linear:
+      x: 1  # Left stick vertical (inverted in some controllers)
+    
+    scale_linear:
+      x: 0.5  # Normal speed: 0.5 m/s
+    
+    scale_linear_turbo:
+      x: 1.0  # Turbo speed: 1.0 m/s
+    
+    axis_angular:
+      yaw: 0  # Left stick horizontal
+    
+    scale_angular:
+      yaw: 1.0  # Normal rotation speed
+    
+    scale_angular_turbo:
+      yaw: 1.5  # Turbo rotation speed
+    
+    enable_button: 4  # Button to hold for enabling control (L1)
+    enable_turbo_button: 5  # Button to hold for turbo mode (R1)
+
+    require_enable_button: true # Require enable button to be held for movement

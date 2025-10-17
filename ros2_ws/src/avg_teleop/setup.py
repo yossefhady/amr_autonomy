@@ -19,7 +19,7 @@ setup(
     zip_safe=True,
     maintainer='yossef',
     maintainer_email='yossefhady53@gmail.com',
-    description='TODO: Package description',
+    description='Teleoperation system for AVG mobile robot with joystick, keyboard, and command multiplexing support',
     license='TODO: License declaration',
     extras_require={
         'test': [
@@ -28,7 +28,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'teleop_node = avg_teleop.teleop_node:main',
+            'test_joy = avg_teleop.test_joy:main',
         ],
     },
 )

@@ -3,7 +3,7 @@
 <package format="3">
   <name>avg_teleop</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>Teleoperation system for AVG mobile robot with joystick, keyboard, and command multiplexing support</description>
   <maintainer email="yossefhady53@gmail.com">yossef</maintainer>
   <license>TODO: License declaration</license>
 
@@ -12,9 +12,22 @@
   <test_depend>ament_pep257</test_depend>
   <test_depend>python3-pytest</test_depend>
 
+  <!-- Core ROS 2 dependencies -->
   <depend>rclpy</depend>
+  
+  <!-- Message dependencies -->
   <depend>geometry_msgs</depend>
+  <depend>sensor_msgs</depend>
 
+  <!-- GUI dependencies -->
+  <depend>python3-tk</depend>
+  
+  <!-- Joystick support -->
+  <depend>joy</depend>
+  
+  <!-- Launch file dependencies -->
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
 
   <export>
     <build_type>ament_python</build_type>
