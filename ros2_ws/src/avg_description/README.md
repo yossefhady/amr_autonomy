@@ -33,8 +33,9 @@ This package contains the URDF/Xacro description for a 4-wheeled warehouse Auton
 
 ### Drive System
 
-- **Type**: 4-wheel skid-steer
-- **Wheels**: Continuous rotation joints
+- **Type**: 4-wheel Mecanum / Omni-Directional
+- **Wheels**: Continuous rotation joints with omnidirectional capability
+- **Capabilities**: Forward/backward, lateral strafing, rotation, and diagonal movement
 - 4 wheels: `wheel_front_left`, `wheel_front_right`, `wheel_rear_left`, `wheel_rear_right`
 
 ### Sensors

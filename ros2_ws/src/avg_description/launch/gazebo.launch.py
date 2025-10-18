@@ -106,20 +106,18 @@ def generate_launch_description():
         }]
     )
     
-    # Gazebo Sim (gz sim / Ignition Gazebo / Gazebo Harmonic)
+    # Gazebo Sim (gz sim / Gazebo Harmonic)
     # Start Gazebo with the specified world
     gazebo_launch = ExecuteProcess(
         cmd=['gz', 'sim', '-r', world, '-v', '4'],
         output='screen',
-        additional_env={'GZ_SIM_RESOURCE_PATH': pkg_description}
+        additional_env={
+            'GZ_SIM_RESOURCE_PATH': pkg_description,
+            # Optional: Enable if using NVIDIA GPU
+            '__NV_PRIME_RENDER_OFFLOAD': '1',
+            '__GLX_VENDOR_LIBRARY_NAME': 'nvidia'
+        }
     )
-    
-    # Alternative if using older Ignition Gazebo naming
-    # gazebo_launch = ExecuteProcess(
-    #     cmd=['ign', 'gazebo', '-r', world, '-v', '4'],
-    #     output='screen',
-    #     additional_env={'IGN_GAZEBO_RESOURCE_PATH': pkg_description}
-    # )
     
     # Spawn robot in Gazebo
     spawn_robot = Node(

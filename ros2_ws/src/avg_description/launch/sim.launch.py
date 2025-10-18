@@ -125,7 +125,12 @@ def generate_launch_description():
     gazebo_launch = ExecuteProcess(
         cmd=['gz', 'sim', '-r', world, '-v', '4'],
         output='screen',
-        additional_env={'GZ_SIM_RESOURCE_PATH': pkg_description}
+        additional_env={
+            'GZ_SIM_RESOURCE_PATH': pkg_description,
+            # Optional: Enable if using NVIDIA GPU
+            '__NV_PRIME_RENDER_OFFLOAD': '1',
+            '__GLX_VENDOR_LIBRARY_NAME': 'nvidia'
+        }
     )
     
     # Spawn robot in Gazebo (delayed to ensure Gazebo is ready)
@@ -184,7 +189,7 @@ def generate_launch_description():
         parameters=[{'use_sim_time': use_sim_time}]
     )
     
-    # Bridge Camera
+    # Bridge Camera Image
     bridge_camera = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -192,6 +197,18 @@ def generate_launch_description():
         output='screen',
         arguments=[
             '/camera/image_raw@sensor_msgs/msg/Image[gz.msgs.Image'
+        ],
+        parameters=[{'use_sim_time': use_sim_time}]
+    )
+
+    # Bridge Camera Info (CRITICAL for RViz Camera display)
+    bridge_camera_info = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        name='camera_info_bridge',
+        output='screen',
+        arguments=[
+            '/camera/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo'
         ],
         parameters=[{'use_sim_time': use_sim_time}]
     )
@@ -283,6 +300,7 @@ def generate_launch_description():
         bridge_lidar,
         bridge_imu,
         bridge_camera,
+        bridge_camera_info,
         bridge_cmd_vel,
         bridge_odom,
         bridge_joint_states,

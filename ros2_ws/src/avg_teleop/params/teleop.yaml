@@ -1,10 +1,10 @@
 /**:
   ros__parameters:
-    ## Joystick axis mapping reference (PS4):
-    #   Axis 0: Left stick horizontal (left/right) -> angular.z (rotation)
-    #   Axis 1: Left stick vertical (up/down) -> linear.x (forward/backward)
+    ## Joystick axis mapping reference (PS4) - MECANUM/OMNI DRIVE:
+    #   Axis 0: Left stick horizontal -> linear.y (strafe left/right)
+    #   Axis 1: Left stick vertical -> linear.x (forward/backward)
     #   Axis 2: L2 trigger
-    #   Axis 3: Right stick horizontal
+    #   Axis 3: Right stick horizontal -> angular.z (rotation)
     #   Axis 4: Right stick vertical
     #   Axis 5: R2 trigger
     
@@ -18,25 +18,37 @@
     # 6: L2 (left trigger button)
     # 7: R2 (right trigger button)
     
+    ## LINEAR MOVEMENT (Forward/Backward + Strafe)
     axis_linear:
-      x: 1  # Left stick vertical (inverted in some controllers)
+      x: 1  # Left stick vertical (forward/backward)
+      y: 0  # Left stick horizontal (strafe left/right)
     
     scale_linear:
-      x: 0.5  # Normal speed: 0.5 m/s
+      x: 0.7  # Forward/backward speed
+      y: 0.7  # Strafe speed
     
     scale_linear_turbo:
-      x: 1.0  # Turbo speed: 1.0 m/s
+      x: 1.5  # Turbo forward/backward
+      y: 1.5  # Turbo strafe
     
+    ## ANGULAR MOVEMENT (Rotation)
     axis_angular:
-      yaw: 0  # Left stick horizontal
+      yaw: 3  # Right stick horizontal (rotation)
     
     scale_angular:
-      yaw: 1.0  # Normal rotation speed
+      yaw: 2.5  # Normal rotation speed
     
     scale_angular_turbo:
-      yaw: 1.5  # Turbo rotation speed
-    
+      yaw: 4.0  # Turbo rotation speed
+
     enable_button: 4  # Button to hold for enabling control (L1)
     enable_turbo_button: 5  # Button to hold for turbo mode (R1)
 
-    require_enable_button: true # Require enable button to be held for movement
+    require_enable_button: false  # Require enable button to be held for movement
+    
+    # Publishing settings for smoother control
+    publish_stamped_twist: false
+    coalesce_interval_ms: 50  # 20 Hz publishing rate for smoother response
+    
+    # Deadband for axis drift
+    deadband: 0.1

@@ -59,8 +59,8 @@ def generate_launch_description():
         parameters=[{
             'device_id': 0,
             'dev': LaunchConfiguration('device'),
-            'deadzone': 0.05,
-            'autorepeat_rate': 20.0,
+            'deadzone': 0.03,  # Lower deadzone for better responsiveness
+            'autorepeat_rate': 50.0,  # Higher rate (50 Hz) for smoother control
         }],
         condition=IfCondition(LaunchConfiguration('use_joystick')),
         output='screen'
