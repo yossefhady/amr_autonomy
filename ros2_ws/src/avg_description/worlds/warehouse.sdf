@@ -6,26 +6,11 @@
 <sdf version="1.9">
   <world name="warehouse">
     
-    <!-- Physics settings - Optimized for skid-steer robot stability -->
-    <physics name="1ms" type="ignored">
-      <max_step_size>0.001</max_step_size>
-      <real_time_factor>1.0</real_time_factor>
-      <real_time_update_rate>1000</real_time_update_rate>
-      <!-- ODE physics parameters for better contact stability -->
-      <max_contacts>20</max_contacts>
-      <ode>
-        <solver>
-          <type>quick</type>
-          <iters>50</iters>
-          <sor>1.3</sor>
-        </solver>
-        <constraints>
-          <cfm>0.0</cfm>
-          <erp>0.2</erp>
-          <contact_max_correcting_vel>100.0</contact_max_correcting_vel>
-          <contact_surface_layer>0.001</contact_surface_layer>
-        </constraints>
-      </ode>
+    <!-- Physics settings - Optimized for mecanum drive stability -->
+    <physics name="4ms" type="ode">
+      <max_step_size>0.004</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>250</real_time_update_rate>
     </physics>
     
     <!-- Plugin for physics engine -->
@@ -46,10 +31,8 @@
       name="gz::sim::systems::SceneBroadcaster">
     </plugin>
     
-    <!-- Plugin for sensors -->
-    <plugin
-      filename="gz-sim-sensors-system"
-      name="gz::sim::systems::Sensors">
+    <!-- Sensor Systems -->
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
       <render_engine>ogre2</render_engine>
     </plugin>
     
@@ -61,14 +44,16 @@
     
     <!-- Sun light (external ambient lighting) -->
     <light type="directional" name="sun">
+      <pose>0 0 10 0 0 0</pose>
       <cast_shadows>true</cast_shadows>
-      <pose>0 0 20 0 0 0</pose>
-      <diffuse>0.7 0.7 0.65 1</diffuse>
-      <specular>0.3 0.3 0.3 1</specular>
+      <intensity>1</intensity>
+      <direction>-0.5 0.1 -0.9</direction>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
       <attenuation>
         <range>1000</range>
-        <constant>0.9</constant>
         <linear>0.01</linear>
+        <constant>0.9</constant>
         <quadratic>0.001</quadratic>
       </attenuation>
       <direction>-0.4 0.2 -0.9</direction>

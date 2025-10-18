@@ -154,27 +154,33 @@
     </inertial>
   </link>
 
+  <!-- Gazebo properties for base_link (low friction to prevent dragging) -->
+  <gazebo reference="base_link">
+    <mu1>0.000002</mu1>
+    <mu2>0.000002</mu2>
+  </gazebo>
+
   <!-- ========================================== -->
-  <!-- Wheels (Using Wheel Macro)                 -->
+  <!-- Wheels (Using Wheel Macro with Mecanum Friction) -->
   <!-- ========================================== -->
   
-  <!-- Front Left Wheel -->
-  <xacro:wheel prefix="front_left" parent="base_link">
+  <!-- Front Left Wheel - friction direction (1, -1, 0) -->
+  <xacro:wheel prefix="front_left" parent="base_link" friction_dir="1 -1 0">
     <origin xyz="${wheel_x_offset_front} ${wheel_y_offset} ${wheel_z_offset}" rpy="0 0 0"/>
   </xacro:wheel>
 
-  <!-- Front Right Wheel -->
-  <xacro:wheel prefix="front_right" parent="base_link">
+  <!-- Front Right Wheel - friction direction (1, 1, 0) -->
+  <xacro:wheel prefix="front_right" parent="base_link" friction_dir="1 1 0">
     <origin xyz="${wheel_x_offset_front} ${-wheel_y_offset} ${wheel_z_offset}" rpy="0 0 0"/>
   </xacro:wheel>
 
-  <!-- Rear Left Wheel -->
-  <xacro:wheel prefix="rear_left" parent="base_link">
+  <!-- Rear Left Wheel - friction direction (1, 1, 0) -->
+  <xacro:wheel prefix="rear_left" parent="base_link" friction_dir="1 1 0">
     <origin xyz="${wheel_x_offset_rear} ${wheel_y_offset} ${wheel_z_offset}" rpy="0 0 0"/>
   </xacro:wheel>
 
-  <!-- Rear Right Wheel -->
-  <xacro:wheel prefix="rear_right" parent="base_link">
+  <!-- Rear Right Wheel - friction direction (1, -1, 0) -->
+  <xacro:wheel prefix="rear_right" parent="base_link" friction_dir="1 -1 0">
     <origin xyz="${wheel_x_offset_rear} ${-wheel_y_offset} ${wheel_z_offset}" rpy="0 0 0"/>
   </xacro:wheel>
 
@@ -201,47 +207,57 @@
   <!-- Gazebo Plugins for gz sim (Gazebo Harmonic) -->
   <!-- ========================================== -->
   
-  <!-- Mecanum / Omni-Directional Drive controller plugin -->
+  <!-- ========================================== -->
+  <!-- Mecanum Drive Plugin                      -->
+  <!-- ========================================== -->
   <gazebo>
     <plugin filename="gz-sim-mecanum-drive-system" name="gz::sim::systems::MecanumDrive">
-      <!-- Wheel joint configuration (mecanum pattern) -->
+      <!-- Topic for velocity commands -->
+      <topic>cmd_vel</topic>
+
+      <!-- Wheel joint names (must match your URDF) -->
       <front_left_joint>wheel_front_left_joint</front_left_joint>
       <front_right_joint>wheel_front_right_joint</front_right_joint>
       <back_left_joint>wheel_rear_left_joint</back_left_joint>
       <back_right_joint>wheel_rear_right_joint</back_right_joint>
-      
+
       <!-- Robot physical parameters -->
       <wheel_separation>${wheel_separation}</wheel_separation>
       <wheelbase>${wheelbase}</wheelbase>
       <wheel_radius>${wheel_radius}</wheel_radius>
-      
-      <!-- Velocity limits -->
-      <max_linear_velocity>1.6</max_linear_velocity>
-      <min_linear_velocity>-1.6</min_linear_velocity>
-      <max_angular_velocity>4.5</max_angular_velocity>
-      <min_angular_velocity>-4.5</min_angular_velocity>
-      
-      <!-- Acceleration limits -->
-      <max_linear_acceleration>1.5</max_linear_acceleration>
-      <max_angular_acceleration>3.0</max_angular_acceleration>
-      
-      <!-- ROS 2 topics -->
-      <topic>cmd_vel</topic>
+
+      <!-- Control limits -->
+      <min_acceleration>-5</min_acceleration>
+      <max_acceleration>5</max_acceleration>
+
+      <!-- Odometry configuration -->
       <odom_topic>odom</odom_topic>
       <tf_topic>/tf</tf_topic>
-      
-      <!-- Frame configuration -->
       <frame_id>odom</frame_id>
       <child_frame_id>base_footprint</child_frame_id>
-      
-      <!-- Publishing configuration -->
       <odom_publish_frequency>50</odom_publish_frequency>
-      <publish_odom>true</publish_odom>
-      <publish_odom_tf>true</publish_odom_tf>
     </plugin>
   </gazebo>
 
-  <!-- Joint state publisher plugin -->
+  <!-- ========================================== -->
+  <!-- Odometry Publisher Plugin                  -->
+  <!-- ========================================== -->
+  <gazebo>
+    <plugin name="gz::sim::systems::OdometryPublisher" filename="gz-sim-odometry-publisher-system">
+      <odom_topic>odom</odom_topic>
+      <odom_frame>odom</odom_frame>
+      <robot_base_frame>base_footprint</robot_base_frame>
+      <publish_tf>true</publish_tf>
+      <tf_topic>tf</tf_topic>
+      <odom_publish_frequency>50</odom_publish_frequency>
+      <xyz_offset>0 0 0</xyz_offset>
+      <rpy_offset>0 0 0</rpy_offset>
+    </plugin>
+  </gazebo>
+
+  <!-- ========================================== -->
+  <!-- Joint State Publisher Plugin               -->
+  <!-- ========================================== -->
   <gazebo>
     <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
       <topic>joint_states</topic>
@@ -253,7 +269,10 @@
     </plugin>
   </gazebo>
 
-  <!-- Pose publisher plugin -->
+  <!-- ========================================== -->
+  <!-- Pose Publisher Plugin (optional)           -->
+  <!-- Enable to publish robot pose information   -->
+  <!-- ========================================== -->
   <gazebo>
     <plugin filename="gz-sim-pose-publisher-system" name="gz::sim::systems::PosePublisher">
       <publish_link_pose>true</publish_link_pose>
@@ -264,5 +283,6 @@
       <update_frequency>50</update_frequency>
     </plugin>
   </gazebo>
+
 
 </robot>

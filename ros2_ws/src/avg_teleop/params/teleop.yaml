@@ -44,7 +44,7 @@
     enable_button: 4  # Button to hold for enabling control (L1)
     enable_turbo_button: 5  # Button to hold for turbo mode (R1)
 
-    require_enable_button: false  # Require enable button to be held for movement
+    require_enable_button: true  # Require enable button to be held for movement
     
     # Publishing settings for smoother control
     publish_stamped_twist: false
