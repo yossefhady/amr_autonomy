@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Unified launch file for simulating the warehouse AGV robot in Gazebo with RViz visualization.
+Unified launch file for simulating the warehouse AMR robot in Gazebo with RViz visualization.
 This file launches:
     - Gazebo simulator (gz sim / Gazebo Harmonic)
     - robot_state_publisher: publishes the robot's TF transforms
@@ -49,40 +49,10 @@ def generate_launch_description():
         description='Absolute path to RViz config file'
     )
     
-    x_arg = DeclareLaunchArgument(
-        name='x',
-        default_value='0.0',
-        description='X coordinate for robot spawn position'
-    )
-    
-    y_arg = DeclareLaunchArgument(
-        name='y',
-        default_value='0.0',
-        description='Y coordinate for robot spawn position'
-    )
-    
-    z_arg = DeclareLaunchArgument(
-        name='z',
-        default_value='0.1',
-        description='Z coordinate for robot spawn position'
-    )
-    
-    yaw_arg = DeclareLaunchArgument(
-        name='yaw',
-        default_value='0.0',
-        description='Yaw angle for robot spawn orientation'
-    )
-    
     use_sim_time_arg = DeclareLaunchArgument(
         name='use_sim_time',
         default_value='true',
         description='Use simulation time'
-    )
-    
-    gui_arg = DeclareLaunchArgument(
-        name='gui',
-        default_value='true',
-        description='Launch Gazebo GUI'
     )
     
     rviz_arg = DeclareLaunchArgument(
@@ -95,12 +65,7 @@ def generate_launch_description():
     model = LaunchConfiguration('model')
     world = LaunchConfiguration('world')
     rvizconfig = LaunchConfiguration('rvizconfig')
-    x = LaunchConfiguration('x')
-    y = LaunchConfiguration('y')
-    z = LaunchConfiguration('z')
-    yaw = LaunchConfiguration('yaw')
     use_sim_time = LaunchConfiguration('use_sim_time')
-    gui = LaunchConfiguration('gui')
     rviz = LaunchConfiguration('rviz')
     
     # Process the URDF/Xacro file
@@ -145,118 +110,32 @@ def generate_launch_description():
                 arguments=[
                     '-name', 'warehouse_agv',
                     '-topic', '/robot_description',
-                    '-x', x,
-                    '-y', y,
-                    '-z', z,
-                    '-Y', yaw
+                    '-x', '0.0',
+                    '-y', '0.0',
+                    '-z', '0.1',
+                    '-Y', '0.0'
                 ],
                 parameters=[{'use_sim_time': use_sim_time}]
             )
         ]
     )
     
-    # ROS-Gazebo Bridge for clock
-    bridge_clock = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        name='clock_bridge',
-        output='screen',
-        arguments=['/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock'],
-        parameters=[{'use_sim_time': use_sim_time}]
-    )
-    
-    # Bridge LIDAR scan
-    bridge_lidar = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        name='lidar_bridge',
-        output='screen',
-        arguments=[
-            '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan'
-        ],
-        parameters=[{'use_sim_time': use_sim_time}]
-    )
-    
-    # Bridge IMU
-    bridge_imu = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        name='imu_bridge',
-        output='screen',
-        arguments=[
-            '/imu@sensor_msgs/msg/Imu[gz.msgs.IMU'
-        ],
-        parameters=[{'use_sim_time': use_sim_time}]
-    )
-    
-    # Bridge Camera Image
-    bridge_camera = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        name='camera_bridge',
-        output='screen',
-        arguments=[
-            '/camera/image_raw@sensor_msgs/msg/Image[gz.msgs.Image'
-        ],
-        parameters=[{'use_sim_time': use_sim_time}]
-    )
-
-    # Bridge Camera Info (CRITICAL for RViz Camera display)
-    bridge_camera_info = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        name='camera_info_bridge',
-        output='screen',
-        arguments=[
-            '/camera/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo'
-        ],
-        parameters=[{'use_sim_time': use_sim_time}]
-    )
-    
-    # Bridge cmd_vel for robot control
-    bridge_cmd_vel = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        name='cmd_vel_bridge',
-        output='screen',
-        arguments=[
-            '/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist'
-        ],
-        parameters=[{'use_sim_time': use_sim_time}]
-    )
-    
-    # Bridge odometry
-    bridge_odom = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        name='odom_bridge',
-        output='screen',
-        arguments=[
-            '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry'
-        ],
-        parameters=[{'use_sim_time': use_sim_time}]
-    )
-    
-    # Bridge joint_states (critical for wheel TF!)
-    bridge_joint_states = Node(
+    # Gazebo Bridges
+    gz_bridges = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
         name='joint_states_bridge',
         output='screen',
         arguments=[
-            '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model'
-        ],
-        parameters=[{'use_sim_time': use_sim_time}]
-    )
-    
-    # Bridge TF (for proper coordinate frame synchronization)
-    bridge_tf = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        name='tf_bridge',
-        output='screen',
-        arguments=[
-            '/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V'
+            '/camera/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo',
+            '/camera/image_raw@sensor_msgs/msg/Image[gz.msgs.Image',
+            '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
+            '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
+            '/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
+            '/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
+            '/imu@sensor_msgs/msg/Imu[gz.msgs.IMU',
+            '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
         ],
         parameters=[{'use_sim_time': use_sim_time}]
     )
@@ -282,30 +161,13 @@ def generate_launch_description():
         model_arg,
         world_arg,
         rviz_config_arg,
-        x_arg,
-        y_arg,
-        z_arg,
-        yaw_arg,
         use_sim_time_arg,
-        gui_arg,
         rviz_arg,
         
         # Core nodes
         robot_state_publisher_node,
         gazebo_launch,
         spawn_robot,
-        
-        # Bridges
-        bridge_clock,
-        bridge_lidar,
-        bridge_imu,
-        bridge_camera,
-        bridge_camera_info,
-        bridge_cmd_vel,
-        bridge_odom,
-        bridge_joint_states,
-        bridge_tf,
-        
-        # Visualization
+        gz_bridges,
         rviz_node,
     ])

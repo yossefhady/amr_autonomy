@@ -2,9 +2,9 @@
 """
 Launch file for displaying the warehouse AGV robot in RViz.
 This file launches:
-  - robot_state_publisher: publishes the robot's TF transforms
-  - joint_state_publisher_gui: allows manual control of joint positions
-  - rviz2: visualization tool with pre-configured settings
+    - robot_state_publisher: publishes the robot's TF transforms
+    - joint_state_publisher_gui: allows manual control of joint positions
+    - rviz2: visualization tool with pre-configured settings
 """
 
 import os

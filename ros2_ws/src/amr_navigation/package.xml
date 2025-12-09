@@ -12,46 +12,13 @@
   <test_depend>ament_pep257</test_depend>
   <test_depend>python3-pytest</test_depend>
 
-  <!-- Nav2 core dependencies -->
-  <depend>nav2_common</depend>
-  <depend>nav2_bringup</depend>
-  <depend>nav2_bt_navigator</depend>
-  <depend>nav2_controller</depend>
-  <depend>nav2_planner</depend>
-  <depend>nav2_map_server</depend>
-  <depend>nav2_amcl</depend>
-  <depend>nav2_lifecycle_manager</depend>
-  <depend>nav2_behaviors</depend>
-  <depend>nav2_waypoint_follower</depend>
-  <depend>nav2_smoother</depend>
-  <depend>nav2_velocity_smoother</depend>
-  <depend>nav2_collision_monitor</depend>
-  <depend>nav2_costmap_2d</depend>
-  <depend>nav2_navfn_planner</depend>
-  <depend>dwb_core</depend>
-  <depend>dwb_critics</depend>
-  <depend>dwb_plugins</depend>
-  
-  <!-- SLAM integration -->
-  <depend>slam_toolbox</depend>
-  
-  <!-- ROS 2 core -->
-  <depend>rclpy</depend>
-  <depend>launch</depend>
-  <depend>launch_ros</depend>
-  
-  <!-- Message types -->
-  <depend>std_msgs</depend>
-  <depend>geometry_msgs</depend>
-  <depend>sensor_msgs</depend>
-  <depend>nav_msgs</depend>
-  
-  <!-- Transforms -->
-  <depend>tf2_ros</depend>
-  <depend>tf_transformations</depend>
-  
-  <!-- Utilities -->
-  <depend>ament_index_python</depend>
+  <exec_depend>nav2_bringup</exec_depend>
+  <exec_depend>nav2_common</exec_depend>
+  <exec_depend>nav2_msgs</exec_depend>
+  <exec_depend>nav2_simple_commander</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>slam_toolbox</exec_depend>
 
 
   <export>

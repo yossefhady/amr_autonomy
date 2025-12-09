@@ -27,10 +27,6 @@ Parameters:
     - teleop_deadzone (float): Velocity threshold for detecting teleop activity (default: 0.01)
     - smooth_transition (bool): Enable velocity smoothing during mode switch (default: true)
     - override_priority (string): 'teleop' or 'nav' - which has priority (default: 'teleop')
-
-Author: AMR AMR Project
-ROS 2: Jazzy Jalisco
-Date: 2025-10-19
 """
 
 import rclpy

@@ -7,7 +7,7 @@ package_name = 'amr_navigation'
 setup(
     name=package_name,
     version='0.0.0',
-    packages=find_packages(exclude=['test']),
+    packages=[package_name],
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
@@ -21,16 +21,12 @@ setup(
     zip_safe=True,
     maintainer='yossef',
     maintainer_email='yossefhady53@gmail.com',
-    description='Navigation package for AMR with Nav2 and AMCL localization',
+    description='Navigation package for AMR with Nav2 and AMCL localization for Mecanum drive robot',
     license='Apache-2.0',
-    extras_require={
-        'test': [
-            'pytest',
-        ],
-    },
+    tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'teleop_override_node = amr_navigation.teleop_override:main',
+            'teleop_override = amr_navigation.teleop_override:main',
         ],
     },
 )
