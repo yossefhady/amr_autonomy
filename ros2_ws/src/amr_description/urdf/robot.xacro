@@ -1,6 +1,19 @@
 <?xml version="1.0"?>
-<robot name="warehouse_agv" xmlns:xacro="http://www.ros.org/wiki/xacro">
-
+<!-- 
+  Warehouse AMR Robot Description
+  
+  This file defines the URDF/Xacro model for a warehouse autonomous mobile robot.
+  It supports two drive modes:
+  1. Differential Drive (default): Standard 4-wheel skid-steer configuration.
+  2. Mecanum Drive: Omnidirectional drive using mecanum wheels (useful for SLAM/Mapping).
+  
+  Usage:
+    xacro robot.xacro drive_mode:=diff    (Differential Drive)
+    xacro robot.xacro drive_mode:=mecanum (Mecanum Drive)
+-->
+<robot name="warehouse_amr" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <!-- Arguments -->
+  <xacro:arg name="drive_mode" default="diff"/>
   <!-- Include all macro files -->
   <xacro:include filename="$(find amr_description)/urdf/materials.xacro"/>
   <xacro:include filename="$(find amr_description)/urdf/wheel_macro.xacro"/>
@@ -22,6 +35,18 @@
   <xacro:property name="wheel_x_offset_rear" value="${-wheelbase/2}"/>
   <xacro:property name="wheel_y_offset" value="${wheel_separation/2 + wheel_width/2}"/>
   <xacro:property name="wheel_z_offset" value="0"/>
+
+  <!-- Drive Mode Configuration -->
+  <xacro:property name="drive_mode" value="$(arg drive_mode)"/>
+  
+  <xacro:if value="${drive_mode == 'mecanum'}">
+    <xacro:property name="wheel_mu1" value="1.5"/>
+    <xacro:property name="wheel_mu2" value="0.0"/>
+  </xacro:if>
+  <xacro:unless value="${drive_mode == 'mecanum'}">
+    <xacro:property name="wheel_mu1" value="1.0"/>
+    <xacro:property name="wheel_mu2" value="1.0"/>
+  </xacro:unless>
 
   <!-- ========================================== -->
   <!-- Base Footprint Link (ground projection)    -->
@@ -161,26 +186,26 @@
   </gazebo>
 
   <!-- ========================================== -->
-  <!-- Wheels (Using Wheel Macro with Mecanum Friction) -->
+  <!-- Wheels with Mecanum Friction               -->
   <!-- ========================================== -->
   
   <!-- Front Left Wheel - friction direction (1, -1, 0) -->
-  <xacro:wheel prefix="front_left" parent="base_link" friction_dir="1 -1 0">
+  <xacro:wheel prefix="front_left" parent="base_link" friction_dir="1 -1 0" mu1="${wheel_mu1}" mu2="${wheel_mu2}">
     <origin xyz="${wheel_x_offset_front} ${wheel_y_offset} ${wheel_z_offset}" rpy="0 0 0"/>
   </xacro:wheel>
 
   <!-- Front Right Wheel - friction direction (1, 1, 0) -->
-  <xacro:wheel prefix="front_right" parent="base_link" friction_dir="1 1 0">
+  <xacro:wheel prefix="front_right" parent="base_link" friction_dir="1 1 0" mu1="${wheel_mu1}" mu2="${wheel_mu2}">
     <origin xyz="${wheel_x_offset_front} ${-wheel_y_offset} ${wheel_z_offset}" rpy="0 0 0"/>
   </xacro:wheel>
 
   <!-- Rear Left Wheel - friction direction (1, 1, 0) -->
-  <xacro:wheel prefix="rear_left" parent="base_link" friction_dir="1 1 0">
+  <xacro:wheel prefix="rear_left" parent="base_link" friction_dir="1 1 0" mu1="${wheel_mu1}" mu2="${wheel_mu2}">
     <origin xyz="${wheel_x_offset_rear} ${wheel_y_offset} ${wheel_z_offset}" rpy="0 0 0"/>
   </xacro:wheel>
 
   <!-- Rear Right Wheel - friction direction (1, -1, 0) -->
-  <xacro:wheel prefix="rear_right" parent="base_link" friction_dir="1 -1 0">
+  <xacro:wheel prefix="rear_right" parent="base_link" friction_dir="1 -1 0" mu1="${wheel_mu1}" mu2="${wheel_mu2}">
     <origin xyz="${wheel_x_offset_rear} ${-wheel_y_offset} ${wheel_z_offset}" rpy="0 0 0"/>
   </xacro:wheel>
 
@@ -210,50 +235,83 @@
   <!-- ========================================== -->
   <!-- Mecanum Drive Plugin                      -->
   <!-- ========================================== -->
-  <gazebo>
-    <plugin filename="gz-sim-mecanum-drive-system" name="gz::sim::systems::MecanumDrive">
-      <!-- Topic for velocity commands -->
-      <topic>cmd_vel</topic>
+  <xacro:if value="${drive_mode == 'mecanum'}">
+    <gazebo>
+      <plugin filename="gz-sim-mecanum-drive-system" name="gz::sim::systems::MecanumDrive">
+        <!-- Topic for velocity commands -->
+        <topic>cmd_vel</topic>
 
-      <!-- Wheel joint names (must match your URDF) -->
-      <front_left_joint>wheel_front_left_joint</front_left_joint>
-      <front_right_joint>wheel_front_right_joint</front_right_joint>
-      <back_left_joint>wheel_rear_left_joint</back_left_joint>
-      <back_right_joint>wheel_rear_right_joint</back_right_joint>
+        <!-- Wheel joint names (must match your URDF) -->
+        <front_left_joint>wheel_front_left_joint</front_left_joint>
+        <front_right_joint>wheel_front_right_joint</front_right_joint>
+        <back_left_joint>wheel_rear_left_joint</back_left_joint>
+        <back_right_joint>wheel_rear_right_joint</back_right_joint>
 
-      <!-- Robot physical parameters -->
-      <wheel_separation>${wheel_separation}</wheel_separation>
-      <wheelbase>${wheelbase}</wheelbase>
-      <wheel_radius>${wheel_radius}</wheel_radius>
+        <!-- Robot physical parameters -->
+        <wheel_separation>${wheel_separation}</wheel_separation>
+        <wheelbase>${wheelbase}</wheelbase>
+        <wheel_radius>${wheel_radius}</wheel_radius>
 
-      <!-- Control limits -->
-      <min_acceleration>-5</min_acceleration>
-      <max_acceleration>5</max_acceleration>
+        <!-- Control limits -->
+        <min_acceleration>-5</min_acceleration>
+        <max_acceleration>5</max_acceleration>
 
-      <!-- Odometry configuration -->
-      <odom_topic>odom</odom_topic>
-      <tf_topic>/tf</tf_topic>
-      <frame_id>odom</frame_id>
-      <child_frame_id>base_footprint</child_frame_id>
-      <odom_publish_frequency>50</odom_publish_frequency>
-    </plugin>
-  </gazebo>
+        <!-- Odometry configuration -->
+        <odom_topic>odom</odom_topic>
+        <tf_topic>/tf</tf_topic>
+        <frame_id>odom</frame_id>
+        <child_frame_id>base_footprint</child_frame_id>
+        <odom_publish_frequency>50</odom_publish_frequency>
+      </plugin>
+    </gazebo>
+  </xacro:if>
+
+  <!-- ========================================== -->
+  <!-- Differential Drive Plugin                  -->
+  <!-- ========================================== -->
+  <xacro:unless value="${drive_mode == 'mecanum'}">
+    <gazebo>
+      <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
+        <!-- Topic for velocity commands -->
+        <topic>cmd_vel</topic>
+
+        <!-- Wheel joint names -->
+        <left_joint>wheel_front_left_joint</left_joint>
+        <left_joint>wheel_rear_left_joint</left_joint>
+        <right_joint>wheel_front_right_joint</right_joint>
+        <right_joint>wheel_rear_right_joint</right_joint>
+
+        <!-- Robot physical parameters -->
+        <wheel_separation>${wheel_separation}</wheel_separation>
+        <wheel_radius>${wheel_radius}</wheel_radius>
+
+        <!-- Odometry configuration -->
+        <odom_topic>odom</odom_topic>
+        <tf_topic>/tf</tf_topic>
+        <frame_id>odom</frame_id>
+        <child_frame_id>base_footprint</child_frame_id>
+        <odom_publish_frequency>50</odom_publish_frequency>
+      </plugin>
+    </gazebo>
+  </xacro:unless>
 
   <!-- ========================================== -->
   <!-- Odometry Publisher Plugin                  -->
   <!-- ========================================== -->
-  <gazebo>
-    <plugin name="gz::sim::systems::OdometryPublisher" filename="gz-sim-odometry-publisher-system">
-      <odom_topic>odom</odom_topic>
-      <odom_frame>odom</odom_frame>
-      <robot_base_frame>base_footprint</robot_base_frame>
-      <publish_tf>true</publish_tf>
-      <tf_topic>tf</tf_topic>
-      <odom_publish_frequency>50</odom_publish_frequency>
-      <xyz_offset>0 0 0</xyz_offset>
-      <rpy_offset>0 0 0</rpy_offset>
-    </plugin>
-  </gazebo>
+  <xacro:if value="${drive_mode == 'mecanum'}">
+    <gazebo>
+      <plugin name="gz::sim::systems::OdometryPublisher" filename="gz-sim-odometry-publisher-system">
+        <odom_topic>odom</odom_topic>
+        <odom_frame>odom</odom_frame>
+        <robot_base_frame>base_footprint</robot_base_frame>
+        <publish_tf>true</publish_tf>
+        <tf_topic>tf</tf_topic>
+        <odom_publish_frequency>50</odom_publish_frequency>
+        <xyz_offset>0 0 0</xyz_offset>
+        <rpy_offset>0 0 0</rpy_offset>
+      </plugin>
+    </gazebo>
+  </xacro:if>
 
   <!-- ========================================== -->
   <!-- Joint State Publisher Plugin               -->

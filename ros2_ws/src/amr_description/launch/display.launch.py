@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 """
-Launch file for displaying the warehouse AGV robot in RViz.
+Launch file for displaying the warehouse AMR robot in RViz.
+
+Arguments:
+    - model: Path to the robot URDF/Xacro file.
+    - drive_mode: Drive configuration ('diff' or 'mecanum'). Default: 'diff'.
+    - use_gui: Launch joint_state_publisher_gui (true/false).
+
 This file launches:
     - robot_state_publisher: publishes the robot's TF transforms
     - joint_state_publisher_gui: allows manual control of joint positions
@@ -8,11 +14,9 @@ This file launches:
 """
 
 import os
-from pathlib import Path
-
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, OpaqueFunction
+from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition, UnlessCondition
 from launch.substitutions import LaunchConfiguration, Command
 from launch_ros.actions import Node
@@ -53,16 +57,23 @@ def generate_launch_description():
         default_value='true',
         description='Launch joint_state_publisher_gui if true'
     )
+
+    drive_mode_arg = DeclareLaunchArgument(
+        name='drive_mode',
+        default_value='diff',
+        description='Drive mode: diff or mecanum'
+    )
     
     # Get launch configurations
     model = LaunchConfiguration('model')
     rvizconfig = LaunchConfiguration('rvizconfig')
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_gui = LaunchConfiguration('use_gui')
+    drive_mode = LaunchConfiguration('drive_mode')
     
     # Process the URDF/Xacro file
     robot_description = ParameterValue(
-        Command(['xacro ', model]),
+        Command(['xacro ', model, ' drive_mode:=', drive_mode]),
         value_type=str
     )
     
@@ -110,10 +121,14 @@ def generate_launch_description():
     
     # Create and return launch description
     return LaunchDescription([
+        # Arguments
         model_arg,
         rviz_arg,
         use_sim_time_arg,
         use_gui_arg,
+        drive_mode_arg,
+        
+        # Core nodes
         robot_state_publisher_node,
         joint_state_publisher_gui_node,
         joint_state_publisher_node,

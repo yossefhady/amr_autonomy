@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 """
 Unified launch file for simulating the warehouse AMR robot in Gazebo with RViz visualization.
+
+Arguments:
+    - model: Path to the robot URDF/Xacro file.
+    - world: Path to the Gazebo world file.
+    - drive_mode: Drive configuration ('diff' or 'mecanum'). Default: 'diff'.
+    - rviz: Launch RViz2 (true/false).
+
 This file launches:
     - Gazebo simulator (gz sim / Gazebo Harmonic)
     - robot_state_publisher: publishes the robot's TF transforms
@@ -61,6 +68,12 @@ def generate_launch_description():
         default_value='true',
         description='Launch RViz2'
     )
+
+    drive_mode_arg = DeclareLaunchArgument(
+        name='drive_mode',
+        default_value='diff',
+        description='Drive mode: diff or mecanum'
+    )
     
     # Get launch configurations
     model = LaunchConfiguration('model')
@@ -68,10 +81,11 @@ def generate_launch_description():
     rvizconfig = LaunchConfiguration('rvizconfig')
     use_sim_time = LaunchConfiguration('use_sim_time')
     rviz = LaunchConfiguration('rviz')
+    drive_mode = LaunchConfiguration('drive_mode')
     
     # Process the URDF/Xacro file
     robot_description = ParameterValue(
-        Command(['xacro ', model]),
+        Command(['xacro ', model, ' drive_mode:=', drive_mode]),
         value_type=str
     )
     
@@ -164,6 +178,7 @@ def generate_launch_description():
         rviz_config_arg,
         use_sim_time_arg,
         rviz_arg,
+        drive_mode_arg,
         
         # Core nodes
         robot_state_publisher_node,
