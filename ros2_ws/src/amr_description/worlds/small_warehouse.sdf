@@ -1,12 +1,10 @@
 <?xml version="1.0" ?>
 <!--
-  Warehouse world for AGV robot simulation
+  Warehouse world for AMR robot simulation
   Compatible with Gazebo Harmonic (gz sim)
 -->
 <sdf version="1.9">
   <world name="warehouse">
-    
-    <!-- Physics settings - Optimized for mecanum drive stability -->
     <physics name="4ms" type="ode">
       <max_step_size>0.004</max_step_size>
       <real_time_factor>1</real_time_factor>

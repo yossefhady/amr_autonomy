@@ -27,9 +27,10 @@ def generate_launch_description():
     
     # Paths
     default_model_path = os.path.join(pkg_description, 'urdf', 'robot.xacro')
-    default_world_path = os.path.join(pkg_description, 'worlds', 'warehouse.sdf')
+    default_world_path = os.path.join(pkg_description, 'worlds', 'medium_warehouse.sdf')
     default_rviz_config_path = os.path.join(pkg_description, 'rviz', 'display_config.rviz')
-    
+    default_models_path = os.path.join(pkg_description, 'models')
+
     # Declare launch arguments
     model_arg = DeclareLaunchArgument(
         name='model',
@@ -91,7 +92,7 @@ def generate_launch_description():
         cmd=['gz', 'sim', '-r', world, '-v', '4'],
         output='screen',
         additional_env={
-            'GZ_SIM_RESOURCE_PATH': pkg_description,
+            'GZ_SIM_RESOURCE_PATH': f"{pkg_description}:{default_models_path}",
             # Optional: Enable if using NVIDIA GPU
             '__NV_PRIME_RENDER_OFFLOAD': '1',
             '__GLX_VENDOR_LIBRARY_NAME': 'nvidia'

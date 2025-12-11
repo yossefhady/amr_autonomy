@@ -1,0 +1,210 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="rack_conveyor">
+    <static>true</static>
+    <link name="link">
+      <!-- Left Rail -->
+      <visual name="visual_rail_left">
+        <pose>0.4 0 0.7 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.1 4.6 0.2</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.2 0.6 0.2 1</ambient>
+          <diffuse>0.2 0.6 0.2 1</diffuse>
+        </material>
+      </visual>
+
+      <!-- Right Rail -->
+      <visual name="visual_rail_right">
+        <pose>-0.4 0 0.7 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.1 4.6 0.2</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.2 0.6 0.2 1</ambient>
+          <diffuse>0.2 0.6 0.2 1</diffuse>
+        </material>
+      </visual>
+
+      <!-- Conveyor Rollers (Silver/Original Mesh) -->
+      <visual name="visual_rollers">
+        <pose>0 0 0.7 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1.1 0.4 1.0</scale>
+            <uri>model://rack_conveyor/meshes/ShippingContainer_Textured.obj</uri>
+            <submesh>
+              <name>Conveyor_Rollers</name>
+              <center>true</center>
+            </submesh>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.7 0.7 0.7 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+        </material>
+      </visual>
+
+      <!-- Collision (Simple Box) -->
+      <collision name="collision_rack">
+        <pose>0 0 0.7 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>1.0 4.6 0.2</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <!-- Legs (Aligned to new rails) -->
+      <!-- Front Left -->
+      <visual name="leg_fl">
+        <pose>0.4 2.0 0.3 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>0.6</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.3 0.3 0.3 1</diffuse>
+        </material>
+      </visual>
+      <collision name="col_leg_fl">
+        <pose>0.4 2.0 0.3 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>0.6</length>
+          </cylinder>
+        </geometry>
+      </collision>
+
+      <!-- Front Right -->
+      <visual name="leg_fr">
+        <pose>-0.4 2.0 0.3 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>0.6</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.3 0.3 0.3 1</diffuse>
+        </material>
+      </visual>
+      <collision name="col_leg_fr">
+        <pose>-0.4 2.0 0.3 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>0.6</length>
+          </cylinder>
+        </geometry>
+      </collision>
+
+      <!-- Back Left -->
+      <visual name="leg_bl">
+        <pose>0.4 -2.0 0.3 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>0.6</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.3 0.3 0.3 1</diffuse>
+        </material>
+      </visual>
+      <collision name="col_leg_bl">
+        <pose>0.4 -2.0 0.3 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>0.6</length>
+          </cylinder>
+        </geometry>
+      </collision>
+
+      <!-- Back Right -->
+      <visual name="leg_br">
+        <pose>-0.4 -2.0 0.3 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>0.6</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.3 0.3 0.3 1</diffuse>
+        </material>
+      </visual>
+      <collision name="col_leg_br">
+        <pose>-0.4 -2.0 0.3 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>0.6</length>
+          </cylinder>
+        </geometry>
+      </collision>
+
+      <!-- Middle Left -->
+      <visual name="leg_ml">
+        <pose>0.4 0 0.3 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>0.6</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.3 0.3 0.3 1</diffuse>
+        </material>
+      </visual>
+      <collision name="col_leg_ml">
+        <pose>0.4 0 0.3 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>0.6</length>
+          </cylinder>
+        </geometry>
+      </collision>
+
+      <!-- Middle Right -->
+      <visual name="leg_mr">
+        <pose>-0.4 0 0.3 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>0.6</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.3 0.3 0.3 1</diffuse>
+        </material>
+      </visual>
+      <collision name="col_leg_mr">
+        <pose>-0.4 0 0.3 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>0.6</length>
+          </cylinder>
+        </geometry>
+      </collision>
+
+    </link>
+  </model>
+</sdf>

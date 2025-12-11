@@ -1,0 +1,294 @@
+<?xml version="1.0" ?>
+<!--
+  Warehouse world for AMR robot simulation
+  Compatible with Gazebo Harmonic (gz sim)
+-->
+<sdf version="1.9">
+  <world name="warehouse">
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>true</shadows>
+    </scene>
+
+    <physics name="4ms" type="ode">
+      <max_step_size>0.004</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>250</real_time_update_rate>
+    </physics>
+    
+    <!-- Plugin for physics engine -->
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <!-- Sun light (external ambient lighting) -->
+    <light type="directional" name="sun">
+      <pose>0 0 10 0 0 0</pose>
+      <cast_shadows>true</cast_shadows>
+      <intensity>1</intensity>
+      <direction>-0.5 0.1 -0.9</direction>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <linear>0.01</linear>
+        <constant>0.9</constant>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.4 0.2 -0.9</direction>
+    </light>
+
+    <!-- Ambient warehouse lighting -->
+    <light type="directional" name="ambient_fill">
+      <cast_shadows>false</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.4 0.4 0.4 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <direction>0.3 -0.3 -0.7</direction>
+    </light>
+    
+    <!-- Warehouse concrete floor -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+              </ode>
+            </friction>
+          </surface>
+        </collision>
+        <visual name="concrete_floor">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.6 0.6 0.6 1</ambient>
+            <diffuse>0.65 0.65 0.65 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <actor name="actor1">
+      <skin>
+        <filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename>
+        <scale>1.0</scale>
+      </skin>
+      <animation name="walking">
+        <filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename>
+        <interpolate_x>true</interpolate_x>
+      </animation>
+      <link name="actor_link">
+        <inertial>
+          <mass>80.0</mass>
+          <inertia>
+            <ixx>21.6</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>21.6</iyy>
+            <iyz>0</iyz>
+            <izz>3.33</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.5 0.5 1.8</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+      <script>
+        <loop>true</loop>
+        <delay_start>0.000000</delay_start>
+        <auto_start>true</auto_start>
+        <trajectory id="0" type="walking">
+            <waypoint>
+              <time>0.0</time>
+              <pose>-6 -4 1 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+              <time>25.0</time>
+              <pose>7 -4 1 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+              <time>30</time>
+              <pose>7 -4 1 0 0 3.14</pose>
+          </waypoint>
+          <waypoint>
+              <time>55</time>
+              <pose>-6 -4 1 0 0 3.14</pose>
+          </waypoint>
+          <waypoint>
+              <time>60.0</time>
+              <pose>-6 -4 1 0 0 0</pose>
+          </waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+    <actor name="actor2">
+      <skin>
+        <filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename>
+        <scale>1.0</scale>
+      </skin>
+      <animation name="walking">
+        <filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename>
+        <interpolate_x>true</interpolate_x>
+      </animation>
+      <link name="actor_link">
+        <inertial>
+          <mass>80.0</mass>
+          <inertia>
+            <ixx>21.6</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>21.6</iyy>
+            <iyz>0</iyz>
+            <izz>3.33</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.5 0.5 1.8</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+      <script>
+        <loop>true</loop>
+        <delay_start>0.000000</delay_start>
+        <auto_start>true</auto_start>
+        <trajectory id="0" type="walking">
+            <waypoint>
+              <time>0.0</time>
+              <pose>7 4 1 0 0 3.14</pose>
+          </waypoint>
+          <waypoint>
+              <time>45.0</time>
+              <pose>-6 4 1 0 0 3.14</pose>
+          </waypoint>
+          <waypoint>
+              <time>50</time>
+              <pose>-6 4 1 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+              <time>75</time>
+              <pose>7 4 1 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+              <time>80.0</time>
+              <pose>7 4 1 0 0 3.14</pose>
+          </waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+    <include>
+      <uri>model://workcell</uri>
+      <name>workcell</name>
+      <static>true</static>
+      <pose>-0.040107 0.052292 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://workcell_bin</uri>
+      <name>workcell_bin</name>
+      <static>true</static>
+      <pose>2.88085 5.68612 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://workcell_bin</uri>
+      <name>workcell_bin_clone</name>
+      <static>true</static>
+      <pose>3.8356 5.68259 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://workcell_bin</uri>
+      <name>workcell_bin_clone_0</name>
+      <static>true</static>
+      <pose>4.95299 5.6442 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://workcell_bin</uri>
+      <name>workcell_bin_clone_1</name>
+      <static>true</static>
+      <pose>5.85776 5.64162 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://workcell_bin</uri>
+      <name>workcell_bin_clone_2</name>
+      <static>true</static>
+      <pose>7.00972 5.66323 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://workcell_bin</uri>
+      <name>workcell_bin_clone_3</name>
+      <static>true</static>
+      <pose>8.07235 5.67521 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://rack_conveyor</uri>
+      <name>rack_conveyor_1</name>
+      <static>true</static>
+      <pose>7.934044361114502 -0.89525014162063599 0 0 0 1.5708000357176291</pose>
+    </include>
+
+    <include>
+      <uri>model://rack_conveyor</uri>
+      <name>rack_conveyor_2</name>
+      <static>true</static>
+      <pose>3.9304122400022008 -0.89692061043021187 0 0 0 1.5707999672671704</pose>
+    </include>
+
+    <include>
+      <uri>model://rack_conveyor</uri>
+      <name>rack_conveyor_3</name>
+      <static>true</static>
+      <pose>-0.069485138029120708 -0.89563492997577576 0 0 0 1.5707999672671704</pose>
+    </include>
+
+    <include>
+      <uri>model://rack_conveyor</uri>
+      <name>rack_conveyor_4</name>
+      <static>true</static>
+      <pose>-4.0636771455152774 -0.89639999122565284 0 0 0 1.5707999672671704</pose>
+    </include>
+
+    <include>
+      <uri>model://rack_conveyor</uri>
+      <name>rack_conveyor_5</name>
+      <static>true</static>
+      <pose>-8.0634324511542381 -0.89296333965021923 0 0 0 1.5707999672671704</pose>
+    </include>
+
+  </world>
+</sdf>
