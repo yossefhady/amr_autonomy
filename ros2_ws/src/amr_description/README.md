@@ -72,7 +72,7 @@ The robot is modeled as a 4-wheeled rectangular chassis with a multi-layer desig
 The package publishes a standard ROS 2 coordinate frame hierarchy:
 
 <div align="center">
-  <img src="docs/images/tf_tree.png" alt="ROS 2 TF Tree" width="600"/>
+  <img src="docs/images/tf_tree.png" alt="ROS 2 TF Tree" width="100%"/>
   <br/>
   <em>Figure 2: The Robot's Coordinate Frame Tree (generated via rqt_tf_tree)</em>
 </div>
@@ -94,21 +94,21 @@ The simulation utilizes the following `gz-sim` systems:
 
 | **Robot Model (URDF)** | **Sensor Visualization** |
 |:---:|:---:|
-| <img src="docs/images/robot_model.png" width="400" alt="Robot Model in RViz"/> | <img src="docs/images/rviz_view.png" width="400" alt="RViz Sensor Data"/> |
+| <img src="docs/images/robot_model.png" width="550" alt="Robot Model in RViz"/> | <img src="docs/images/rviz_view.png" width="550" alt="RViz Sensor Data"/> |
 | *Detailed view of the robot chassis and sensors* | *LIDAR scans and Camera feed in RViz* |
 
 ### Drive Modes
 
 | **Differential Drive** | **Mecanum Drive** |
 |:---:|:---:|
-| <img src="docs/images/diff_drive.gif" width="400" alt="Differential Drive Mode"/> | <img src="docs/images/mecanum_drive.gif" width="400" alt="Mecanum Drive Mode"/> |
+| <img src="docs/images/diff_drive.gif" width="475" alt="Differential Drive Mode"/> | <img src="docs/images/mecanum_drive.gif" width="475" alt="Mecanum Drive Mode"/> |
 | *Standard skid-steer navigation* | *Omnidirectional movement for SLAM* |
 
 ### Simulation Environments
 
 | **Small Warehouse** | **Medium Warehouse** | **Large Warehouse** |
 |:---:|:---:|:---:|
-| <img src="docs/images/small_warehouse.png" width="250" alt="Small Warehouse"/> | <img src="docs/images/medium_warehouse.png" width="250" alt="Medium Warehouse"/> | <img src="docs/images/large_warehouse.png" width="250" alt="Large Warehouse"/> |
+| <img src="docs/images/small_warehouse.png" width="310" alt="Small Warehouse"/> | <img src="docs/images/medium_warehouse.png" width="310" alt="Medium Warehouse"/> | <img src="docs/images/large_warehouse.png" width="310" alt="Large Warehouse"/> |
 | *Basic testing environment* | *Standard layout with shelves* | *Complex environment with obstacles* |
 
 ---
@@ -266,9 +266,12 @@ To change LIDAR range or Camera resolution, edit `urdf/sensor_macro.xacro`:
 
 ## 📧 Maintainer
 
-**Yossef Hady**
+**Yossef Hady**:
 *Robotics Software Engineer*
-Email: <yossefhady53@gmail.com>
+
+Email: <yossefhady007@gmail.com>
+
 🔗 [GitHub](https://github.com/yossefhady/) | [LinkedIn](https://www.linkedin.com/in/yossefhady/)
+
 
 > ❤️ Star this repo if you find it useful or want to follow development!
