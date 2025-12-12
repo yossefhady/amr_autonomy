@@ -4,8 +4,6 @@ SLAM Launch File for AMR Robot
 ================================
 Launches slam_toolbox for online async mapping with RViz visualization.
 
-Author: AMR Team
-ROS 2 Version: Jazzy
 """
 
 import os
@@ -13,9 +11,8 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
 from ament_index_python.packages import get_package_share_directory
 
 
@@ -36,7 +33,6 @@ def generate_launch_description():
     
     # Default paths
     default_slam_params = os.path.join(pkg_amr_slam, 'params', 'slam_params.yaml')
-    default_rviz_config = os.path.join(pkg_amr_slam, 'rviz', 'slam_view.rviz')
     
     # ========================================
     # Launch Arguments
@@ -54,26 +50,12 @@ def generate_launch_description():
         description='Full path to the SLAM parameters YAML file'
     )
     
-    use_rviz_arg = DeclareLaunchArgument(
-        'use_rviz',
-        default_value='true',
-        description='Whether to launch RViz for visualization'
-    )
-    
-    rviz_config_arg = DeclareLaunchArgument(
-        'rviz_config',
-        default_value=default_rviz_config,
-        description='Full path to RViz config file'
-    )
-    
     # ========================================
     # Launch Configurations
     # ========================================
     
     use_sim_time = LaunchConfiguration('use_sim_time')
     slam_params_file = LaunchConfiguration('slam_params_file')
-    use_rviz = LaunchConfiguration('use_rviz')
-    rviz_config = LaunchConfiguration('rviz_config')
     
     # ========================================
     # SLAM Toolbox - Online Async Launch
@@ -91,21 +73,6 @@ def generate_launch_description():
     )
     
     # ========================================
-    # RViz2 Visualization
-    # ========================================
-    
-    rviz_node = Node(
-        package='rviz2',
-        executable='rviz2',
-        name='rviz2_slam',
-        output='screen',
-        arguments=['-d', rviz_config],
-        parameters=[{'use_sim_time': use_sim_time}],
-        condition=IfCondition(use_rviz),
-        respawn=False
-    )
-    
-    # ========================================
     # Launch Description Assembly
     # ========================================
     
@@ -113,10 +80,7 @@ def generate_launch_description():
         # Launch arguments
         use_sim_time_arg,
         slam_params_file_arg,
-        use_rviz_arg,
-        rviz_config_arg,
         
         # Nodes and includes
         slam_toolbox_launch,
-        rviz_node,
     ])

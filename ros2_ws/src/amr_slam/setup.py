@@ -15,6 +15,9 @@ setup(
         (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
         (os.path.join('share', package_name, 'params'), glob('params/*.yaml')),
         (os.path.join('share', package_name, 'rviz'), glob('rviz/*.rviz')),
+        (os.path.join('share', package_name, 'maps/small_warehouse'), glob('maps/small_warehouse/*')),
+        (os.path.join('share', package_name, 'maps/medium_warehouse'), glob('maps/medium_warehouse/*')),
+        (os.path.join('share', package_name, 'maps/large_warehouse'), glob('maps/large_warehouse/*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -29,6 +32,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'save_map = amr_slam.save_map:main',
         ],
     },
 )

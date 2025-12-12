@@ -269,7 +269,7 @@ To change LIDAR range or Camera resolution, edit `urdf/sensor_macro.xacro`:
 **Yossef Hady**:
 *Robotics Software Engineer*
 
-Email: <yossefhady007@gmail.com>
+Email: <yossefhady53@gmail.com>
 
 🔗 [GitHub](https://github.com/yossefhady/) | [LinkedIn](https://www.linkedin.com/in/yossefhady/)
 

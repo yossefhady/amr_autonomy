@@ -31,7 +31,7 @@ slam_toolbox:
     
     # === Scan Matcher Configuration ===
     # Correlation search space configuration
-    correlation_search_space_dimension: 0.5
+    correlation_search_space_dimension: 2.0
     correlation_search_space_resolution: 0.01
     correlation_search_space_smear_deviation: 0.1
     
@@ -74,7 +74,7 @@ slam_toolbox:
     
     # === Correlation Parameters ===
     # How much a map has to change to trigger a correlation update
-    map_update_interval: 5.0
+    map_update_interval: 1.0
     
     # === Transform Publishing ===
     # Publish map->odom transform

@@ -294,25 +294,7 @@
       </plugin>
     </gazebo>
   </xacro:unless>
-
-  <!-- ========================================== -->
-  <!-- Odometry Publisher Plugin                  -->
-  <!-- ========================================== -->
-  <xacro:if value="${drive_mode == 'mecanum'}">
-    <gazebo>
-      <plugin name="gz::sim::systems::OdometryPublisher" filename="gz-sim-odometry-publisher-system">
-        <odom_topic>odom</odom_topic>
-        <odom_frame>odom</odom_frame>
-        <robot_base_frame>base_footprint</robot_base_frame>
-        <publish_tf>true</publish_tf>
-        <tf_topic>tf</tf_topic>
-        <odom_publish_frequency>50</odom_publish_frequency>
-        <xyz_offset>0 0 0</xyz_offset>
-        <rpy_offset>0 0 0</rpy_offset>
-      </plugin>
-    </gazebo>
-  </xacro:if>
-
+  
   <!-- ========================================== -->
   <!-- Joint State Publisher Plugin               -->
   <!-- ========================================== -->

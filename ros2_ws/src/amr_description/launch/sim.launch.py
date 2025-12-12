@@ -20,7 +20,6 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess, TimerAction
-from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration, Command
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
@@ -52,7 +51,7 @@ def generate_launch_description():
     )
     
     rviz_config_arg = DeclareLaunchArgument(
-        name='rvizconfig',
+        name='rviz_config',
         default_value=default_rviz_config_path,
         description='Absolute path to RViz config file'
     )
@@ -61,12 +60,6 @@ def generate_launch_description():
         name='use_sim_time',
         default_value='true',
         description='Use simulation time'
-    )
-    
-    rviz_arg = DeclareLaunchArgument(
-        name='rviz',
-        default_value='true',
-        description='Launch RViz2'
     )
 
     drive_mode_arg = DeclareLaunchArgument(
@@ -78,9 +71,8 @@ def generate_launch_description():
     # Get launch configurations
     model = LaunchConfiguration('model')
     world = LaunchConfiguration('world')
-    rvizconfig = LaunchConfiguration('rvizconfig')
+    rviz_config = LaunchConfiguration('rviz_config')
     use_sim_time = LaunchConfiguration('use_sim_time')
-    rviz = LaunchConfiguration('rviz')
     drive_mode = LaunchConfiguration('drive_mode')
     
     # Process the URDF/Xacro file
@@ -164,9 +156,8 @@ def generate_launch_description():
                 executable='rviz2',
                 name='rviz2',
                 output='screen',
-                arguments=['-d', rvizconfig],
-                parameters=[{'use_sim_time': use_sim_time}],
-                condition=IfCondition(rviz)
+                arguments=['-d', rviz_config],
+                parameters=[{'use_sim_time': use_sim_time}]
             )
         ]
     )
@@ -177,7 +168,6 @@ def generate_launch_description():
         world_arg,
         rviz_config_arg,
         use_sim_time_arg,
-        rviz_arg,
         drive_mode_arg,
         
         # Core nodes
