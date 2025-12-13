@@ -56,7 +56,7 @@ To support both resuming work and standard navigation, we employ a custom map sa
 The SLAM system relies on a standard TF tree structure. `slam_toolbox` publishes the `map` -> `odom` transform, while the robot description handles `odom` -> `base_link`.
 
 <div align="center">
-  <img src="docs/images/tf_tree.png" alt="TF Tree" width="80%"/>
+  <img src="docs/images/tf_tree.png" alt="TF Tree" width="100%"/>
   <br>
   <em>Figure 1: Standard TF Tree (map -> odom -> base_link)</em>
 </div>
@@ -69,16 +69,16 @@ The SLAM system relies on a standard TF tree structure. `slam_toolbox` publishes
 
 | **Real-time Mapping** | **RViz Visualization** |
 |:---:|:---:|
-| <img src="docs/images/slam_demo.gif" width="400" alt="Mapping Process"/> | <img src="docs/images/slam_map.png" width="400" alt="RViz View"/> |
+| <img src="docs/images/slam_demo.gif" width="475" alt="Mapping Process"/> | <img src="docs/images/slam_map.png" width="475" alt="RViz View"/> |
 | *Live mapping with Mecanum drive* | *SLAM Toolbox visualization in RViz* |
 
 ### Mapping Results
 
 | **Environment (Gazebo)** | **Generated Map (Result)** |
 |:---:|:---:|
-| **Small Warehouse**<br><img src="docs/images/small_warehouse.png" width="300"/> | <img src="docs/images/map_small.png" width="300"/><br>*Basic mapping test* |
-| **Medium Warehouse**<br><img src="docs/images/medium_warehouse.png" width="300"/> | <img src="docs/images/map_medium.png" width="300"/><br>*Complex layout with shelves* |
-| **Large Warehouse**<br><img src="docs/images/large_warehouse.png" width="300"/> | <br><h1>🔒</h1>**Challenge Locked**<br><em>Waiting for you to test it yourself!</em> 😉 |
+| **Small Warehouse**<br><img src="docs/images/small_warehouse.png" width="350"/> | <img src="docs/images/map_small.png" width="310"/><br>*Basic mapping test* |
+| **Medium Warehouse**<br><img src="docs/images/medium_warehouse.png" width="350"/> | <img src="docs/images/map_medium.png" width="310"/><br>*Complex layout with shelves* |
+| **Large Warehouse**<br><img src="docs/images/large_warehouse.png" width="350"/> | <br><h1>🔒</h1>**Challenge Locked**<br><em>Waiting for you to test it yourself!</em> 😉 |
 
 ---
 
