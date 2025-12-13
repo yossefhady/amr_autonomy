@@ -2,32 +2,28 @@
 """
 SLAM Launch File for AMR Robot
 ================================
-Launches slam_toolbox for online async mapping with RViz visualization.
+Launches slam_toolbox for online async mapping (Fresh Start).
+This is the standard mode for creating a new map from scratch.
 
+Usage Examples:
+---------------
+1. Start mapping (default params):
+    ros2 launch amr_slam slam.launch.py
+
+2. Start mapping with custom params:
+    ros2 launch amr_slam slam.launch.py slam_params_file:=/path/to/my_params.yaml
 """
 
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
-from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
 
 def generate_launch_description():
-    """
-    Generate launch description for SLAM with slam_toolbox.
-    
-    Launch Arguments:
-        - use_sim_time: Use simulation time (default: true)
-        - slam_params_file: Path to slam_toolbox params (default: slam_params.yaml)
-        - use_rviz: Launch RViz for visualization (default: true)
-        - rviz_config: RViz config file path (default: slam_view.rviz)
-    """
-    
-    # Package directories
+    # Get Package directories
     pkg_amr_slam = get_package_share_directory('amr_slam')
     pkg_slam_toolbox = get_package_share_directory('slam_toolbox')
     

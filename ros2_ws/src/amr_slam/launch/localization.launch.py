@@ -2,7 +2,17 @@
 """
 Localization Launch File for AMR Robot
 ======================================
-Launches slam_toolbox in localization mode using the standard launch file.
+Launches slam_toolbox in localization mode (alternative approach for AMCL).
+It loads a serialized pose graph and localizes the robot within it
+without updating the map.
+
+Usage Examples:
+---------------
+1. Localize in 'medium_warehouse':
+    ros2 launch amr_slam localization.launch.py world_name:=medium_warehouse
+
+2. Use specific params file:
+    ros2 launch amr_slam localization.launch.py slam_params_file:=/path/to/params.yaml
 """
 
 import os
@@ -25,6 +35,7 @@ def generate_launch_description():
     # ========================================
     # Launch Arguments
     # ========================================
+
     use_sim_time_arg = DeclareLaunchArgument(
         'use_sim_time',
         default_value='true',
@@ -37,8 +48,8 @@ def generate_launch_description():
         description='Full path to the SLAM parameters YAML file'
     )
 
-    world_name_arg = DeclareLaunchArgument(
-        name='world_name',
+    world_arg = DeclareLaunchArgument(
+        name='world',
         default_value='medium_warehouse',
         description='Name of the world (e.g. medium_warehouse)'
     )
@@ -46,16 +57,17 @@ def generate_launch_description():
     # Configurations
     use_sim_time = LaunchConfiguration('use_sim_time')
     slam_params_file = LaunchConfiguration('slam_params_file')
-    world_name = LaunchConfiguration('world_name')
+    world = LaunchConfiguration('world')
 
     # Construct map path
     map_file_path = PathJoinSubstitution([
-        pkg_amr_slam, 'maps', world_name, world_name
+        pkg_amr_slam, 'maps', world, world
     ])
     
     # ========================================
     # SLAM Toolbox (Standard Launch + Param Injection)
     # ========================================
+
     slam_launch = GroupAction([
         # Inject the map filename
         SetParameter(name='map_file_name', value=map_file_path),
@@ -74,6 +86,6 @@ def generate_launch_description():
     return LaunchDescription([
         use_sim_time_arg,
         slam_params_file_arg,
-        world_name_arg,
+        world_arg,
         slam_launch,
     ])

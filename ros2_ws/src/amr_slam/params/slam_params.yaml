@@ -1,4 +1,4 @@
-# SLAM Toolbox Configuration for AMR Robot
+# SLAM Toolbox Configuration for AMR Robot - Mapping Mode
 # Mode: Online Async SLAM (real-time mapping)
 # Compatible with ROS 2 Jazzy + Gazebo Harmonic
 
@@ -83,7 +83,7 @@ slam_toolbox:
     
     # === Map Settings ===
     resolution: 0.05  # 5 cm per pixel
-    max_laser_range: 12.0  # Maximum range for LIDAR (meters)
+    max_laser_range: 10.0  # Maximum range for LIDAR (meters)
     minimum_time_interval: 0.5
     transform_timeout: 0.2
     
@@ -99,10 +99,3 @@ slam_toolbox:
     enable_interactive_mode: true
     debug_logging: false
     throttle_scans: 1  # Process every Nth scan (1 = all scans)
-    
-    # === Map Loading (For Localization Mode) ===
-    # These parameters are for LOADING existing maps, not saving new ones
-    # Only uncomment these when switching to localization mode with a saved map
-    # map_file_name: /home/yossef/amr_autonomy/ros2_ws/src/amr_navigation/maps
-    # map_start_pose: [0.0, 0.0, 0.0]
-    # map_start_at_dock: true

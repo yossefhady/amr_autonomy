@@ -165,16 +165,20 @@ ros2 launch amr_description sim.launch.py
 Use this for SLAM mapping or when testing holonomic control algorithms.
 
 ```bash
-ros2 launch amr_description sim.launch.py drive_mode:=mecanum
+ros2 launch amr_description sim.launch.py drive_mode:=<mecanum/diff>
 ```
+
+*Example*: `ros2 launch amr_description sim.launch.py drive_mode:=mecanum`
 
 #### Option C: Custom World
 
 Load a specific warehouse environment.
 
 ```bash
-ros2 launch amr_description sim.launch.py world:=$(ros2 pkg prefix amr_description)/share/amr_description/worlds/large_warehouse.sdf
+ros2 launch amr_description sim.launch.py world:=<path_to_world.sdf>
 ```
+
+*Example*: `ros2 launch amr_description sim.launch.py world:=$(ros2 pkg prefix amr_description)/share/amr_description/worlds/large_warehouse.sdf`
 
 ### 2. Visualizing in RViz
 
@@ -272,6 +276,5 @@ To change LIDAR range or Camera resolution, edit `urdf/sensor_macro.xacro`:
 Email: <yossefhady53@gmail.com>
 
 🔗 [GitHub](https://github.com/yossefhady/) | [LinkedIn](https://www.linkedin.com/in/yossefhady/)
-
 
 > ❤️ Star this repo if you find it useful or want to follow development!

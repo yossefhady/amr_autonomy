@@ -7,11 +7,23 @@ It launches:
 1. The Simulation (amr_description/sim.launch.py)
 2. The SLAM Node (based on 'mode')
 3. RViz (with SLAM configuration)
+4. Teleop Node (joystick/keyboard)
 
 Modes:
 - mapping: Start fresh mapping (slam.launch.py)
 - continue_mapping: Continue previous map (continue_mapping.launch.py)
 - localization: Localization only (localization.launch.py)
+
+Usage Examples:
+---------------
+1. Start Fresh Mapping (Default):
+    ros2 launch amr_bringup slam_bringup.launch.py
+
+2. Continue Mapping from a Saved Map:
+    ros2 launch amr_bringup slam_bringup.launch.py mode:=continue_mapping world:=medium_warehouse
+
+3. Localization Only (AMCL-like behavior using SLAM graph):
+    ros2 launch amr_bringup slam_bringup.launch.py mode:=localization world:=medium_warehouse
 """
 
 import os
@@ -24,8 +36,7 @@ from ament_index_python.packages import get_package_share_directory
 
 
 def generate_launch_description():
-    
-    # Package directories
+    # Get Package directories
     pkg_amr_slam = get_package_share_directory('amr_slam')
     pkg_amr_description = get_package_share_directory('amr_description')
     pkg_amr_teleop = get_package_share_directory('amr_teleop')
@@ -43,8 +54,8 @@ def generate_launch_description():
         description='SLAM mode: mapping, continue_mapping, or localization'
     )
     
-    world_name_arg = DeclareLaunchArgument(
-        'world_name',
+    world_arg = DeclareLaunchArgument(
+        'world',
         default_value='medium_warehouse',
         description='World name (for simulation and map loading)'
     )
@@ -75,7 +86,7 @@ def generate_launch_description():
     
     # Configurations
     mode = LaunchConfiguration('mode')
-    world_name = LaunchConfiguration('world_name')
+    world = LaunchConfiguration('world')
     use_sim_time = LaunchConfiguration('use_sim_time')
     rviz_config = LaunchConfiguration('rviz_config')
     use_joystick = LaunchConfiguration('use_joystick')
@@ -91,7 +102,7 @@ def generate_launch_description():
             os.path.join(pkg_amr_description, 'launch', 'sim.launch.py')
         ),
         launch_arguments={
-            'world': PathJoinSubstitution([pkg_amr_description, 'worlds', [world_name, '.sdf']]),
+            'world': PathJoinSubstitution([pkg_amr_description, 'worlds', [world, '.sdf']]),
             'use_sim_time': use_sim_time,
             'rviz_config': rviz_config,
             'drive_mode': 'mecanum',
@@ -121,7 +132,7 @@ def generate_launch_description():
         condition=IfCondition(EqualsSubstitution(mode, 'cont')),
         launch_arguments={
             'use_sim_time': use_sim_time,
-            'world_name': world_name,
+            'world': world,
         }.items()
     )
     
@@ -133,7 +144,7 @@ def generate_launch_description():
         condition=IfCondition(EqualsSubstitution(mode, 'loc')),
         launch_arguments={
             'use_sim_time': use_sim_time,
-            'world_name': world_name,
+            'world': world,
         }.items()
     )
     
@@ -150,9 +161,10 @@ def generate_launch_description():
             'device': joystick_device,
         }.items()
     )
+
     return LaunchDescription([
         mode_arg,
-        world_name_arg,
+        world_arg,
         use_sim_time_arg,
         rviz_config_arg,
         use_joystick_arg,

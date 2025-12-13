@@ -107,7 +107,7 @@ def generate_launch_description():
     
     # Spawn robot in Gazebo (delayed to ensure Gazebo is ready)
     spawn_robot = TimerAction(
-        period=3.0,
+        period=5.0,
         actions=[
             Node(
                 package='ros_gz_sim',

@@ -2,8 +2,16 @@
 """
 Continue Mapping Launch File for AMR Robot
 ==========================================
-Launches slam_toolbox in mapping mode using the standard launch file,
-but injects the 'map_file_name' parameter to load a previous map.
+Launches slam_toolbox in mapping mode but loads a serialized pose graph
+to extend an existing map ("Lifelong SLAM").
+
+Usage Examples:
+---------------
+1. Continue mapping 'medium_warehouse':
+    ros2 launch amr_slam continue_mapping.launch.py world_name:=medium_warehouse
+
+2. Use specific params file:
+    ros2 launch amr_slam continue_mapping.launch.py slam_params_file:=/path/to/params.yaml
 """
 
 import os
@@ -19,15 +27,14 @@ def generate_launch_description():
     # Get package directories
     pkg_amr_slam = get_package_share_directory('amr_slam')
     pkg_slam_toolbox = get_package_share_directory('slam_toolbox')
-    pkg_amr_description = get_package_share_directory('amr_description')
     
     # Default paths
     default_slam_params = os.path.join(pkg_amr_slam, 'params', 'slam_params.yaml')
-    default_world_path = os.path.join(pkg_amr_description, 'worlds', 'medium_warehouse.sdf')
 
     # ========================================
     # Launch Arguments
     # ========================================
+
     use_sim_time_arg = DeclareLaunchArgument(
         'use_sim_time',
         default_value='true',
@@ -40,8 +47,8 @@ def generate_launch_description():
         description='Full path to the SLAM parameters YAML file'
     )
 
-    world_name_arg = DeclareLaunchArgument(
-        name='world_name',
+    world_arg = DeclareLaunchArgument(
+        name='world',
         default_value='medium_warehouse',
         description='Name of the world (e.g. medium_warehouse)'
     )
@@ -49,17 +56,17 @@ def generate_launch_description():
     # Configurations
     use_sim_time = LaunchConfiguration('use_sim_time')
     slam_params_file = LaunchConfiguration('slam_params_file')
-    world_name = LaunchConfiguration('world_name')
+    world = LaunchConfiguration('world')
     
     # Construct map path
     map_file_path = PathJoinSubstitution([
-        pkg_amr_slam, 'maps', world_name, world_name
+        pkg_amr_slam, 'maps', world, world
     ])
-
 
     # ========================================
     # SLAM Toolbox (Standard Launch + Param Injection)
     # ========================================
+
     slam_launch = GroupAction([
         # Inject the map filename and dock setting into the included launch file
         SetParameter(name='map_file_name', value=map_file_path),
@@ -79,6 +86,6 @@ def generate_launch_description():
     return LaunchDescription([
         use_sim_time_arg,
         slam_params_file_arg,
-        world_name_arg,
+        world_arg,
         slam_launch,
     ])

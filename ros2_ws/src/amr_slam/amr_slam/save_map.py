@@ -6,8 +6,14 @@ Saves the map in two locations for different purposes:
 1. amr_slam/maps/<world>/<world>: Serialized format (.posegraph/.data) for continuing mapping.
 2. amr_navigation/maps/<world>/<world>: Standard format (.pgm/.yaml) for AMCL localization.
 
-Usage: ros2 run amr_slam save_map.py <world_name>
-Example: ros2 run amr_slam save_map.py medium_warehouse
+Usage Examples:
+---------------
+1. Save map for the current world (e.g., medium_warehouse):
+    ros2 run amr_slam save_map.py medium_warehouse
+
+Arguments:
+----------
+- world_name: The name of the world/map to save. This creates a folder with this name.
 """
 
 import sys
