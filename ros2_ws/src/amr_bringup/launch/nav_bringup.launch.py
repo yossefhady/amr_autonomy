@@ -1,82 +1,70 @@
 #!/usr/bin/env python3
 """
-SLAM Bringup Launch File for AMR Robot
-======================================
-Central launch file for SLAM operations.
+Navigation Bringup Launch File for AMR Robot
+============================================
+Central launch file for Autonomous Navigation operations.
 It launches:
 1. The Simulation (amr_description/sim.launch.py)
-2. The SLAM Node (based on 'mode')
-3. RViz (with SLAM configuration)
+2. EKF Localization (amr_navigation/ekf.launch.py)
+3. Navigation Stack (amr_navigation/nav.launch.py)
 4. Teleop Node (joystick/keyboard)
+5. Teleop Override Node (safety mux)
 
 Modes:
-- mapping: Start fresh mapping (slam.launch.py)
-- continue_mapping: Continue previous map (continue_mapping.launch.py)
-- localization: Localization only (localization.launch.py)
+- normal: Standard Pure Pursuit controller
+- mppi: MPPI controller (requires additional config)
 
 Usage Examples:
 ---------------
-1. Start Fresh Mapping (Default):
-    ros2 launch amr_bringup slam_bringup.launch.py
+1. Start Navigation (Default):
+    ros2 launch amr_bringup nav_bringup.launch.py
 
-2. Continue Mapping from a Saved Map:
-    ros2 launch amr_bringup slam_bringup.launch.py mode:=continue_mapping world:=medium_warehouse
+2. Start Navigation in a specific world/map:
+    ros2 launch amr_bringup nav_bringup.launch.py world:=medium_warehouse map:=medium_warehouse
 
-3. Localization Only (AMCL-like behavior using SLAM graph):
-    ros2 launch amr_bringup slam_bringup.launch.py mode:=localization world:=medium_warehouse
+3. Start with MPPI controller:
+    ros2 launch amr_bringup nav_bringup.launch.py mode:=mppi
 """
 
 import os
-from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.conditions import IfCondition
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, EqualsSubstitution
+
 from ament_index_python.packages import get_package_share_directory
 
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch_ros.actions import Node
 
 def generate_launch_description():
-    # Get Package directories
-    pkg_amr_slam = get_package_share_directory('amr_slam')
+    # Get package directories
     pkg_amr_description = get_package_share_directory('amr_description')
+    pkg_amr_navigation = get_package_share_directory('amr_navigation')
     pkg_amr_teleop = get_package_share_directory('amr_teleop')
-    
+
     # Default paths
-    default_rviz_config = os.path.join(pkg_amr_slam, 'rviz', 'slam_view.rviz')
-    
+    default_nav_rviz_config = os.path.join(pkg_amr_navigation, 'rviz', 'nav2_config.rviz')
+
     # ========================================
     # Launch Arguments
     # ========================================
-    
-    mode_arg = DeclareLaunchArgument(
-        'mode',
-        default_value='mapping',
-        description='SLAM mode: mapping, continue_mapping, or localization'
-    )
-    
-    world_arg = DeclareLaunchArgument(
-        'world',
-        default_value='medium_warehouse',
-        description='World name for simulation (e.g., medium_warehouse)'
-    )
-    
-    map_arg = DeclareLaunchArgument(
-        'map',
-        default_value='medium_warehouse',
-        description='Map name for SLAM (e.g., medium_warehouse)'
-    )
-    
+
     use_sim_time_arg = DeclareLaunchArgument(
         'use_sim_time',
         default_value='true',
-        description='Use simulation time'
+        description='Use simulation (Gazebo) clock if true'
     )
-    
+
+    mode_arg = DeclareLaunchArgument(
+        'mode',
+        default_value='normal',
+        description='Navigation mode: normal (Pure Pursuit) or advanced (MPPI)'
+    )
+
     rviz_config_arg = DeclareLaunchArgument(
         'rviz_config',
-        default_value=default_rviz_config,
-        description='Path to RViz config file'
-    )
+        default_value=default_nav_rviz_config,
+        description='Full path to the RVIZ config file to use')
 
     use_joystick_arg = DeclareLaunchArgument(
         'use_joystick',
@@ -88,6 +76,18 @@ def generate_launch_description():
         'joystick_device',
         default_value='/dev/input/js0',
         description='Joystick device path'
+    )
+    
+    world_arg = DeclareLaunchArgument(
+        'world',
+        default_value='medium_warehouse',
+        description='World name for simulation (e.g., medium_warehouse)'
+    )
+    
+    map_arg = DeclareLaunchArgument(
+        'map',
+        default_value='medium_warehouse',
+        description='Map name for navigation (e.g., medium_warehouse)'
     )
 
     x_arg = DeclareLaunchArgument(
@@ -107,28 +107,27 @@ def generate_launch_description():
         default_value='0.0',
         description='Initial Yaw orientation'
     )
-    
-    # Configurations
-    mode = LaunchConfiguration('mode')
+
+    # Launch configurations
     world_name = LaunchConfiguration('world')
     map_name = LaunchConfiguration('map')
     use_sim_time = LaunchConfiguration('use_sim_time')
+    mode = LaunchConfiguration('mode')
     rviz_config = LaunchConfiguration('rviz_config')
     use_joystick = LaunchConfiguration('use_joystick')
     joystick_device = LaunchConfiguration('joystick_device')
     x = LaunchConfiguration('x')
     y = LaunchConfiguration('y')
     yaw = LaunchConfiguration('yaw')
-    
-    # Construct paths - separate for simulation and SLAM
+
+    # Construct paths - separate for simulation and navigation
     world_sdf_path = PathJoinSubstitution([pkg_amr_description, 'worlds', [world_name, '.sdf']])
-    map_file_path = PathJoinSubstitution([pkg_amr_slam, 'maps', map_name, map_name])
+    map_yaml_path = PathJoinSubstitution([pkg_amr_navigation, 'maps', map_name, [map_name, '.yaml']])
 
     # ========================================
     # 1. Simulation Launch
     # ========================================
-    
-    # We launch the simulation, but we override the RViz config to use our SLAM view
+
     sim_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_amr_description, 'launch', 'sim.launch.py')
@@ -137,54 +136,46 @@ def generate_launch_description():
             'world': world_sdf_path,
             'use_sim_time': use_sim_time,
             'rviz_config': rviz_config,
-            'drive_mode': 'mecanum',
+            'drive_mode': 'diff',
             'x': x,
             'y': y,
-            'yaw': yaw,
+            'yaw': yaw
         }.items()
     )
-    
+
     # ========================================
-    # 2. SLAM Launch (Conditional)
+    # 2. EKF Localization Launch
     # ========================================
-    
-    # Mode: Mapping (Fresh Start)
-    mapping_launch = IncludeLaunchDescription(
+
+    ekf_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(pkg_amr_slam, 'launch', 'slam.launch.py')
+            os.path.join(pkg_amr_navigation, 'launch', 'ekf.launch.py')
         ),
-        condition=IfCondition(EqualsSubstitution(mode, 'mapping')),
         launch_arguments={
             'use_sim_time': use_sim_time,
         }.items()
     )
-    
-    # Mode: Continue Mapping
-    continue_mapping_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(pkg_amr_slam, 'launch', 'continue_mapping.launch.py')
-        ),
-        condition=IfCondition(EqualsSubstitution(mode, 'cont')),
-        launch_arguments={
-            'use_sim_time': use_sim_time,
-            'map': map_file_path,
-        }.items()
-    )
-    
-    # Mode: Localization
-    localization_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(pkg_amr_slam, 'launch', 'localization.launch.py')
-        ),
-        condition=IfCondition(EqualsSubstitution(mode, 'loc')),
-        launch_arguments={
-            'use_sim_time': use_sim_time,
-            'map': map_file_path,
-        }.items()
-    )
-    
+
     # ========================================
-    # 3. Teleop Launch
+    # 3. Navigation Launch
+    # ========================================
+
+    nav_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_amr_navigation, 'launch', 'nav.launch.py')
+        ),
+        launch_arguments={
+            'use_sim_time': use_sim_time,
+            'map': map_yaml_path,
+            'mode': mode,
+            'x': x,
+            'y': y,
+            'yaw': yaw
+        }.items()
+    )
+
+    # ========================================
+    # 4. Teleop Launch
     # ========================================
     
     teleop_launch = IncludeLaunchDescription(
@@ -194,24 +185,42 @@ def generate_launch_description():
         launch_arguments={
             'use_joystick': use_joystick,
             'device': joystick_device,
+            'cmd_vel_topic': '/cmd_vel_teleop',
         }.items()
     )
 
+    # ========================================
+    # 5. Teleop Override Node
+    # ========================================
+    
+    teleop_override_node = Node(
+        package='amr_navigation',
+        executable='teleop_override',
+        name='teleop_override',
+        output='screen',
+        parameters=[{
+            'teleop_timeout': 0.5,
+            'teleop_deadzone': 0.01,
+            'smooth_transition': True,
+            'override_priority': 'teleop'
+        }]
+    )
+
     return LaunchDescription([
-        mode_arg,
         world_arg,
         map_arg,
         use_sim_time_arg,
+        mode_arg,
         rviz_config_arg,
         use_joystick_arg,
         joystick_device_arg,
         x_arg,
         y_arg,
         yaw_arg,
-        
+
         sim_launch,
-        mapping_launch,
-        continue_mapping_launch,
-        localization_launch,
+        ekf_launch,
+        nav_launch,
         teleop_launch,
+        teleop_override_node
     ])

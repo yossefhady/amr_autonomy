@@ -67,6 +67,24 @@ def generate_launch_description():
         default_value='diff',
         description='Drive mode: diff or mecanum'
     )
+
+    x_arg = DeclareLaunchArgument(
+        name='x',
+        default_value='0.0',
+        description='Spawn X position'
+    )
+
+    y_arg = DeclareLaunchArgument(
+        name='y',
+        default_value='0.0',
+        description='Spawn Y position'
+    )
+
+    yaw_arg = DeclareLaunchArgument(
+        name='yaw',
+        default_value='0.0',
+        description='Spawn Yaw orientation'
+    )
     
     # Get launch configurations
     model = LaunchConfiguration('model')
@@ -74,6 +92,9 @@ def generate_launch_description():
     rviz_config = LaunchConfiguration('rviz_config')
     use_sim_time = LaunchConfiguration('use_sim_time')
     drive_mode = LaunchConfiguration('drive_mode')
+    x = LaunchConfiguration('x')
+    y = LaunchConfiguration('y')
+    yaw = LaunchConfiguration('yaw')
     
     # Process the URDF/Xacro file
     robot_description = ParameterValue(
@@ -117,10 +138,10 @@ def generate_launch_description():
                 arguments=[
                     '-name', 'warehouse_agv',
                     '-topic', '/robot_description',
-                    '-x', '0.0',
-                    '-y', '0.0',
+                    '-x', x,
+                    '-y', y,
                     '-z', '0.1',
-                    '-Y', '0.0'
+                    '-Y', yaw
                 ],
                 parameters=[{'use_sim_time': use_sim_time}]
             )
@@ -169,6 +190,9 @@ def generate_launch_description():
         rviz_config_arg,
         use_sim_time_arg,
         drive_mode_arg,
+        x_arg,
+        y_arg,
+        yaw_arg,
         
         # Core nodes
         robot_state_publisher_node,

@@ -31,20 +31,13 @@ Parameters:
 
 import rclpy
 from rclpy.node import Node
-from rclpy.time import Time
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Bool
 import math
 
 
 class TeleopOverrideNode(Node):
-    """
-    Node that manages switching between teleoperation and autonomous navigation.
-    
-    This node acts as a command multiplexer, selecting between manual teleop
-    commands and autonomous navigation commands based on activity.
-    """
-    
+
     def __init__(self):
         super().__init__('teleop_override_node')
         
@@ -110,36 +103,11 @@ class TeleopOverrideNode(Node):
             10
         )
         
-        # ========================================
-        # Timer for Mode Management
-        # ========================================
-        
+
         # Check mode switching at 20 Hz
         self.timer = self.create_timer(0.05, self.timer_callback)
-        
-        # ========================================
-        # Initialization
-        # ========================================
-        
-        self.get_logger().info('=' * 60)
-        self.get_logger().info('Teleop Override Node Started')
-        self.get_logger().info('=' * 60)
-        self.get_logger().info(f'Teleop timeout: {self.teleop_timeout} seconds')
-        self.get_logger().info(f'Teleop deadzone: {self.teleop_deadzone} m/s')
-        self.get_logger().info(f'Smooth transition: {self.smooth_transition}')
-        self.get_logger().info(f'Override priority: {self.override_priority}')
-        self.get_logger().info('Subscribed to: /cmd_vel_teleop, /cmd_vel_nav')
-        self.get_logger().info('Publishing to: /cmd_vel, /teleop_override_active')
-        self.get_logger().info('Initial mode: AUTONOMOUS')
-        self.get_logger().info('=' * 60)
     
     def teleop_callback(self, msg: Twist):
-        """
-        Callback for teleop velocity commands.
-        
-        Args:
-            msg (Twist): Velocity command from teleoperation
-        """
         self.last_teleop_cmd = msg
         
         # Check if teleop is actively sending non-zero commands
@@ -150,41 +118,17 @@ class TeleopOverrideNode(Node):
             if self.current_mode != 'teleop':
                 self.current_mode = 'teleop'
                 self.teleop_active = True
-                self.get_logger().info('🎮 SWITCHED TO MANUAL CONTROL (Teleop Override Active)')
     
     def nav_callback(self, msg: Twist):
-        """
-        Callback for navigation velocity commands.
-        
-        Args:
-            msg (Twist): Velocity command from Nav2
-        """
         self.last_nav_cmd = msg
     
     def is_cmd_active(self, cmd: Twist) -> bool:
-        """
-        Check if a velocity command is considered 'active' (non-zero).
-        
-        Args:
-            cmd (Twist): Velocity command to check
-            
-        Returns:
-            bool: True if command exceeds deadzone threshold
-        """
         linear_mag = math.sqrt(cmd.linear.x**2 + cmd.linear.y**2 + cmd.linear.z**2)
         angular_mag = abs(cmd.angular.z)
         
         return linear_mag > self.teleop_deadzone or angular_mag > self.teleop_deadzone
     
     def timer_callback(self):
-        """
-        Timer callback to manage mode switching and publish commands.
-        
-        Runs at 20 Hz to:
-        1. Check if teleop has timed out
-        2. Select appropriate velocity command
-        3. Publish final command and status
-        """
         current_time = self.get_clock().now()
         time_since_teleop = (current_time - self.last_teleop_time).nanoseconds / 1e9
         
@@ -196,7 +140,6 @@ class TeleopOverrideNode(Node):
         if self.current_mode == 'teleop' and time_since_teleop > self.teleop_timeout:
             self.current_mode = 'nav'
             self.teleop_active = False
-            self.get_logger().info('🤖 SWITCHED TO AUTONOMOUS CONTROL (Nav2 Active)')
         
         # ========================================
         # Command Selection
@@ -229,20 +172,8 @@ class TeleopOverrideNode(Node):
         status_msg = Bool()
         status_msg.data = self.teleop_active
         self.override_status_pub.publish(status_msg)
-    
-    def destroy_node(self):
-        """Cleanup when node is destroyed."""
-        self.get_logger().info('Teleop Override Node Shutting Down')
-        super().destroy_node()
-
 
 def main(args=None):
-    """
-    Main entry point for the teleop override node.
-    
-    Args:
-        args: Command line arguments
-    """
     rclpy.init(args=args)
     
     try:

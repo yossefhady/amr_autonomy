@@ -8,7 +8,7 @@ to extend an existing map ("Lifelong SLAM").
 Usage Examples:
 ---------------
 1. Continue mapping 'medium_warehouse':
-    ros2 launch amr_slam continue_mapping.launch.py world_name:=medium_warehouse
+    ros2 launch amr_slam continue_mapping.launch.py map:=medium_warehouse
 
 2. Use specific params file:
     ros2 launch amr_slam continue_mapping.launch.py slam_params_file:=/path/to/params.yaml
@@ -47,29 +47,24 @@ def generate_launch_description():
         description='Full path to the SLAM parameters YAML file'
     )
 
-    world_arg = DeclareLaunchArgument(
-        name='world',
+    map_arg = DeclareLaunchArgument(
+        'map',
         default_value='medium_warehouse',
-        description='Name of the world (e.g. medium_warehouse)'
+        description='Map name for SLAM (e.g., medium_warehouse)'
     )
     
     # Configurations
     use_sim_time = LaunchConfiguration('use_sim_time')
     slam_params_file = LaunchConfiguration('slam_params_file')
-    world = LaunchConfiguration('world')
+    map_name = LaunchConfiguration('map')
     
-    # Construct map path
-    map_file_path = PathJoinSubstitution([
-        pkg_amr_slam, 'maps', world, world
-    ])
-
     # ========================================
     # SLAM Toolbox (Standard Launch + Param Injection)
     # ========================================
 
     slam_launch = GroupAction([
         # Inject the map filename and dock setting into the included launch file
-        SetParameter(name='map_file_name', value=map_file_path),
+        SetParameter(name='map_file_name', value=map_name),
         SetParameter(name='map_start_at_dock', value='true'),
         
         IncludeLaunchDescription(
@@ -86,6 +81,6 @@ def generate_launch_description():
     return LaunchDescription([
         use_sim_time_arg,
         slam_params_file_arg,
-        world_arg,
+        map_arg,
         slam_launch,
     ])

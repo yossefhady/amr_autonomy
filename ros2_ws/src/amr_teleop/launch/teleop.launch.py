@@ -50,6 +50,10 @@ def generate_launch_description():
         description='Joystick device path'
     )
     
+    cmd_vel_topic = LaunchConfiguration('cmd_vel_topic')
+    device = LaunchConfiguration('device')
+    use_joystick = LaunchConfiguration('use_joystick')
+
     # Joy node - ROS 2 joystick driver
     # Reads joystick input from device and publishes to /joy topic
     joy_node = Node(
@@ -58,14 +62,15 @@ def generate_launch_description():
         name='joy_node',
         parameters=[{
             'device_id': 0,
-            'dev': LaunchConfiguration('device'),
+            'dev': device,
             'deadzone': 0.03,  # Lower deadzone for better responsiveness
             'autorepeat_rate': 50.0,  # Higher rate (50 Hz) for smoother control
         }],
-        condition=IfCondition(LaunchConfiguration('use_joystick')),
+        condition=IfCondition(use_joystick),
         output='screen'
     )
     
+
     # Teleop Twist Joy node - converts joy messages to cmd_vel
     # Subscribes to /joy and publishes to cmd_vel_topic
     teleop_twist_joy_node = Node(
@@ -74,9 +79,9 @@ def generate_launch_description():
         name='teleop_twist_joy_node',
         parameters=[teleop_params_file],
         remappings=[
-            ('/cmd_vel', LaunchConfiguration('cmd_vel_topic')),
+            ('/cmd_vel',cmd_vel_topic),
         ],
-        condition=IfCondition(LaunchConfiguration('use_joystick')),
+        condition=IfCondition(use_joystick),
         output='screen'
     )
     
